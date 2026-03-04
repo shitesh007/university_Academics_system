@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AttRing } from '../../components/AttRing';
 import { api } from '../../services/api';
-import { STUDENT_DATA, SUBJECTS, EXAMS, ASGN, RECS, TIMELINE } from '../../data/mockData';
+import { STUDENT_DATA, EXAMS, ASGN, RECS, TIMELINE } from '../../data/mockData';
 
 export function StuOverview({ setPage }) {
     return (
