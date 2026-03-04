@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-export function StuLogin({ setView }) {
-    const [f, setF] = useState({ email: "", roll: "", pass: "" });
+export function StuLogin() {
+    const [f, setF] = useState({ username: "", pass: "" });
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState("");
+    const { loginUser } = useContext(AuthContext);
+    const navigate = useNavigate();
 
-    const go = () => {
-        if (!f.email || !f.pass) { setErr("Please fill in all required fields."); return; }
+    const go = async () => {
+        if (!f.username || !f.pass) { setErr("Please fill in all required fields."); return; }
         setErr(""); setLoading(true);
-        setTimeout(() => { setLoading(false); setView("stu-dash"); }, 1600);
+        const result = await loginUser(f.username, f.pass);
+        setLoading(false);
+        if (!result.success) {
+            setErr("Invalid credentials. Please check your username and password.");
+        }
+        // On success, AuthContext.loginUser() auto-navigates based on role
     };
-    const demo = () => setF({ email: "aditya.sharma@sageuniversity.edu.in", roll: "SAGE/CS/2022/0847", pass: "sage@2025" });
+
+    const demo = () => setF({ username: "aditya_sharma", pass: "sage@2025" });
+
+    const handleKeyDown = (e) => { if (e.key === 'Enter') go(); };
 
     return (
         <div className="login-scene">
@@ -54,27 +66,19 @@ export function StuLogin({ setView }) {
                     {err && <div style={{ background: "rgba(225,29,72,.07)", border: "1px solid rgba(225,29,72,.25)", borderRadius: 8, padding: "10px 13px", fontSize: 12, color: "#E11D48", marginBottom: 14, fontWeight: 600 }}>⚠️ {err}</div>}
 
                     {[
-                        { label: "University Email", ico: "📧", type: "email", ph: "you@sageuniversity.edu.in", key: "email" },
-                        { label: "Roll Number / Enrollment ID", ico: "🎓", type: "text", ph: "SAGE/CS/2022/0847", key: "roll" },
+                        { label: "Username", ico: "👤", type: "text", ph: "Enter your username", key: "username" },
                         { label: "Password", ico: "🔒", type: "password", ph: "Enter your password", key: "pass" },
                     ].map(({ label, ico, type, ph, key }) => (
                         <div className="fld" key={key}>
                             <label className="fld-label">{label}</label>
                             <div className="fld-wrap">
                                 <span className="fld-ico">{ico}</span>
-                                <input className="fld-input" type={type} placeholder={ph} value={f[key]} onChange={e => setF({ ...f, [key]: e.target.value })} />
+                                <input className="fld-input" type={type} placeholder={ph} value={f[key]} onChange={e => setF({ ...f, [key]: e.target.value })} onKeyDown={handleKeyDown} />
                             </div>
                         </div>
                     ))}
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, fontSize: 13 }}>
-                        <label style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--muted)", cursor: "pointer" }}>
-                            <input type="checkbox" style={{ accentColor: "var(--blue)" }} /> Remember me
-                        </label>
-                        <span style={{ color: "var(--blue)", fontWeight: 600, cursor: "pointer" }}>Forgot password?</span>
-                    </div>
-
-                    <button className="btn btn-navy" style={{ width: "100%", justifyContent: "center", padding: "13px", fontSize: 15 }} onClick={go} disabled={loading}>
+                    <button className="btn btn-navy" style={{ width: "100%", justifyContent: "center", padding: "13px", fontSize: 15, marginTop: 8 }} onClick={go} disabled={loading}>
                         {loading ? <><span style={{ animation: "spin .7s linear infinite", display: "inline-block", marginRight: 7 }}>⟳</span>Signing in…</> : "Sign In to Portal →"}
                     </button>
 
@@ -84,14 +88,13 @@ export function StuLogin({ setView }) {
 
                     <div style={{ background: "rgba(37,99,235,.05)", border: "1px solid rgba(37,99,235,.14)", borderRadius: 9, padding: "13px 15px", fontSize: 12, color: "var(--muted)" }}>
                         <strong style={{ color: "var(--blue)" }}>Demo Account</strong><br />
-                        Email: aditya.sharma@sageuniversity.edu.in<br />
-                        Roll: SAGE/CS/2022/0847 &nbsp;·&nbsp; Password: sage@2025<br />
+                        Username: aditya_sharma &nbsp;·&nbsp; Password: sage@2025<br />
                         <button style={{ marginTop: 9, background: "transparent", border: "1px solid rgba(37,99,235,.3)", borderRadius: 6, padding: "5px 12px", fontSize: 11, color: "var(--blue)", cursor: "pointer", fontFamily: "Sora,sans-serif", fontWeight: 700 }} onClick={demo}>Auto-fill Demo →</button>
                     </div>
 
                     <div style={{ marginTop: 20, textAlign: "center", fontSize: 12, color: "var(--muted)" }}>
-                        Are you faculty? <span style={{ color: "var(--blue)", fontWeight: 700, cursor: "pointer" }} onClick={() => setView("fac-login")}>Faculty Login →</span>
-                        &nbsp;·&nbsp; <span style={{ color: "var(--blue)", fontWeight: 700, cursor: "pointer" }} onClick={() => setView("home")}>Back to Home</span>
+                        Are you faculty? <span style={{ color: "var(--blue)", fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/faculty-login")}>Faculty Login →</span>
+                        &nbsp;·&nbsp; <span style={{ color: "var(--blue)", fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/")}>Back to Home</span>
                     </div>
                 </div>
             </div>
