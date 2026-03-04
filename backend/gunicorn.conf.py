@@ -1,14 +1,8 @@
-[gunicorn]
-# ── Server Socket ──────────────────────────────────────────────────
-bind = 0.0.0.0:8000
-workers = 3
-worker_class = sync
+# gunicorn.conf.py — Python format required (NOT ini format)
+bind = "0.0.0.0:10000"
+workers = 1
+worker_class = "sync"
 timeout = 120
-
-# ── Logging ────────────────────────────────────────────────────────
-accesslog = -
-errorlog = -
-loglevel = info
-
-# ── App Entry ──────────────────────────────────────────────────────
-# Run with: gunicorn -c gunicorn.conf.py config.wsgi:application
+accesslog = "-"
+errorlog = "-"
+loglevel = "info"
