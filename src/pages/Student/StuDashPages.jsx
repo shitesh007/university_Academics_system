@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AttRing } from '../../components/AttRing';
+import { api } from '../../services/api';
 import { STUDENT_DATA, SUBJECTS, EXAMS, ASGN, RECS, TIMELINE } from '../../data/mockData';
 
 export function StuOverview({ setPage }) {
@@ -130,19 +131,31 @@ export function StuActivity() {
 }
 
 export function StuSubjects() {
+    const [subs, setSubs] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        api.getEnrollments().then(res => {
+            setSubs(res);
+            setLoading(false);
+        }).catch(err => console.error(err));
+    }, []);
+
+    if (loading) return <div className="fi" style={{ padding: 40, textAlign: 'center' }}>Loading Subjects...</div>;
+
     return (
         <div className="fi g2" style={{ alignItems: "start" }}>
             <div className="card cp">
-                <div className="ct">📚 Subject Progress – Semester {STUDENT_DATA.sem}</div>
-                {SUBJECTS.map((s, i) => (
+                <div className="ct">📚 Subject Progress</div>
+                {subs.map((e, i) => (
                     <div className="sr" key={i}>
-                        <span style={{ fontSize: 21 }}>{s.emoji}</span>
+                        <span style={{ fontSize: 21 }}>💻</span>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 12, fontWeight: 600, color: "var(--navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
-                            <div style={{ fontSize: 10, color: "var(--muted)" }}>{s.code}</div>
+                            <div style={{ fontSize: 12, fontWeight: 600, color: "var(--navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.subject?.name}</div>
+                            <div style={{ fontSize: 10, color: "var(--muted)" }}>{e.subject?.code}</div>
                         </div>
-                        <div className="sr-bar"><div className="sr-fill" style={{ "--w": `${s.prog}%`, width: `${s.prog}%` }} /></div>
-                        <div className="sr-pct">{s.prog}%</div>
+                        <div className="sr-bar"><div className="sr-fill" style={{ "--w": `50%`, width: `50%` }} /></div>
+                        <div className="sr-pct">50%</div>
                     </div>
                 ))}
             </div>
@@ -152,13 +165,13 @@ export function StuSubjects() {
                     <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
                         <AttRing pct={STUDENT_DATA.attendance} color="#2563EB" />
                         <div style={{ flex: 1 }}>
-                            {SUBJECTS.map((s, i) => (
+                            {subs.map((e, i) => (
                                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                                    <span style={{ fontSize: 12, color: "var(--muted)", minWidth: 55 }}>{s.code}</span>
+                                    <span style={{ fontSize: 12, color: "var(--muted)", minWidth: 55 }}>{e.subject?.code}</span>
                                     <div style={{ flex: 1, height: 5, borderRadius: 100, background: "var(--surface2)", overflow: "hidden" }}>
-                                        <div style={{ height: "100%", borderRadius: 100, background: s.att >= 75 ? "var(--emerald)" : "var(--rose)", width: `${s.att}%`, transition: "width 1s ease" }} />
+                                        <div style={{ height: "100%", borderRadius: 100, background: parseFloat(e.attendance_percentage) >= 75 ? "var(--emerald)" : "var(--rose)", width: `${e.attendance_percentage}%`, transition: "width 1s ease" }} />
                                     </div>
-                                    <span style={{ fontSize: 11, fontWeight: 700, color: s.att >= 75 ? "var(--emerald)" : "var(--rose)", minWidth: 32, textAlign: "right" }}>{s.att}%</span>
+                                    <span style={{ fontSize: 11, fontWeight: 700, color: parseFloat(e.attendance_percentage) >= 75 ? "var(--emerald)" : "var(--rose)", minWidth: 32, textAlign: "right" }}>{parseFloat(e.attendance_percentage)}%</span>
                                 </div>
                             ))}
                         </div>
@@ -168,8 +181,8 @@ export function StuSubjects() {
                     <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                         <span style={{ fontSize: 20 }}>⚠️</span>
                         <div style={{ fontSize: 13, color: "var(--rose)", fontWeight: 600 }}>
-                            CS-304 Computer Networks attendance is <strong>65%</strong>.<br />
-                            <span style={{ fontWeight: 400, color: "var(--muted)" }}>Minimum required is 75%. Attend next 4 classes.</span>
+                            Low attendance warning.<br />
+                            <span style={{ fontWeight: 400, color: "var(--muted)" }}>Check your subjects with red indicators.</span>
                         </div>
                     </div>
                 </div>
@@ -180,34 +193,52 @@ export function StuSubjects() {
 
 export function StuMaterials() {
     const [tab, setTab] = useState("Notes");
+    const [materials, setMaterials] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        api.getMaterials().then(res => {
+            setMaterials(res);
+            setLoading(false);
+        }).catch(err => console.error(err));
+    }, []);
+
     const TABS = ["Notes", "E-books", "PYQs", "Tutorials", "Important Topics"];
-    const FILES = {
-        Notes: [{ ico: "📄", n: "Unit 1 – Introduction to DSA", s: "2.4 MB", d: "Mar 1" }, { ico: "📄", n: "Unit 2 – Arrays & Linked Lists", s: "3.1 MB", d: "Mar 8" }, { ico: "📄", n: "Unit 3 – Trees & Graphs", s: "1.8 MB", d: "Mar 15" }],
-        "E-books": [{ ico: "📗", n: "Introduction to Algorithms – CLRS", s: "14.2 MB", d: "Jan 5" }, { ico: "📘", n: "Data Structures using C++ – Sahni", s: "9.7 MB", d: "Jan 10" }],
-        PYQs: [{ ico: "📋", n: "End Semester 2024 – DSA", s: "0.8 MB", d: "Dec 20" }, { ico: "📋", n: "Mid Semester 2024 – DSA", s: "0.5 MB", d: "Oct 15" }, { ico: "📋", n: "End Semester 2023 – DSA", s: "0.7 MB", d: "Dec 18" }],
-        Tutorials: [{ ico: "🎬", n: "DSA Video Lecture Series – Part 1", s: "320 MB", d: "Feb 1" }, { ico: "🎬", n: "Sorting Algorithms Visualized", s: "180 MB", d: "Feb 10" }],
-        "Important Topics": [{ ico: "⭐", n: "Most Expected Questions 2025", s: "0.4 MB", d: "Mar 20" }, { ico: "📊", n: "Chapter-wise Weightage Analysis", s: "1.2 MB", d: "Mar 22" }],
-    };
+    const catMap = { 'notes': 'Notes', 'ebook': 'E-books', 'pyq': 'PYQs', 'video': 'Tutorials', 'topic': 'Important Topics' };
+
+    const files = materials.filter(m => catMap[m.category] === tab);
+
+    if (loading) return <div className="fi" style={{ padding: 40, textAlign: 'center' }}>Loading Materials...</div>;
+
     return (
         <div className="fi">
-            <div className="tabs">{TABS.map(t => <button key={t} className={`tab${tab === t ? " on" : ""}`} onClick={() => setTab(t)}>{t} ({FILES[t]?.length || 0})</button>)}</div>
-            {(FILES[tab] || []).map((f, i) => (
+            <div className="tabs">{TABS.map(t => <button key={t} className={`tab${tab === t ? " on" : ""}`} onClick={() => setTab(t)}>{t}</button>)}</div>
+            {files.map((f, i) => (
                 <div className="mat-row" key={i}>
-                    <div className="mat-icon" style={{ background: "rgba(37,99,235,.1)" }}>{f.ico}</div>
+                    <div className="mat-icon" style={{ background: "rgba(37,99,235,.1)" }}>{f.category === 'video' ? '🎬' : (f.category === 'ebook' ? '📗' : '📄')}</div>
                     <div style={{ flex: 1 }}>
-                        <div className="mat-name">{f.n}</div>
-                        <div className="mat-meta">{f.s} · Uploaded {f.d}</div>
+                        <div className="mat-name">{f.title} <span style={{ fontSize: 10, color: "var(--muted)", fontWeight: "normal" }}>({f.subject_code})</span></div>
+                        <div className="mat-meta">{f.size_mb} MB · Uploaded {new Date(f.upload_date).toLocaleDateString()}</div>
                     </div>
                     <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "7px 14px" }}>⬇ Download</button>
                     <button className="ico-btn">🔖</button>
                 </div>
             ))}
+            {files.length === 0 && <div style={{ padding: 20, textAlign: 'center', color: 'var(--muted)' }}>No materials uploaded yet.</div>}
         </div>
     );
 }
 
 export function StuAssignments() {
-    const [done, setDone] = useState([true, false, false, false]);
+    const [done, setDone] = useState({});
+    const [assignments, setAssignments] = useState([]);
+
+    useEffect(() => {
+        api.getAssignments().then(res => setAssignments(res));
+    }, []);
+
+    const toggleDone = (id) => setDone(d => ({ ...d, [id]: !d[id] }))
+
     return (
         <div className="fi">
             <div className="g4" style={{ marginBottom: 22 }}>
@@ -217,17 +248,18 @@ export function StuAssignments() {
             </div>
             <div className="card cp">
                 <div className="ct">📝 All Assignments</div>
-                {ASGN.map((a, i) => (
+                {assignments.map((a, i) => (
                     <div className="ar2" key={i}>
-                        <div className={`chk${done[i] ? " done" : ""}`} onClick={() => setDone(d => { const n = [...d]; n[i] = !n[i]; return n; })}>{done[i] ? "✓" : ""}</div>
+                        <div className={`chk${done[a.id] ? " done" : ""}`} onClick={() => toggleDone(a.id)}>{done[a.id] ? "✓" : ""}</div>
                         <div style={{ flex: 1 }}>
-                            <div className={`ar2-name${done[i] ? " done" : ""}`}>{a.name}</div>
-                            <div className="ar2-sub">{a.sub}</div>
+                            <div className={`ar2-name${done[a.id] ? " done" : ""}`}>{a.title}</div>
+                            <div className="ar2-sub">{a.subject_code}</div>
                         </div>
-                        <div className="ar2-due" style={{ color: done[i] ? "var(--emerald)" : a.dc }}>{done[i] ? "✅ Done" : a.due}</div>
-                        {!done[i] && <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 13px" }}>Submit</button>}
+                        <div className="ar2-due" style={{ color: done[a.id] ? "var(--emerald)" : "var(--rose)" }}>{done[a.id] ? "✅ Done" : `Due ${new Date(a.due_date).toLocaleDateString()}`}</div>
+                        {!done[a.id] && <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 13px" }}>Submit</button>}
                     </div>
                 ))}
+                {assignments.length === 0 && <div style={{ padding: 10, color: 'var(--muted)' }}>No assignments available.</div>}
             </div>
         </div>
     );
