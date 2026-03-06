@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SCHOOLS, FEATURES } from '../data/mockData';
 
-export function Home({ setView }) {
+export function Home() {
+    const navigate = useNavigate();
     return (
         <div className="fi">
             {/* HERO */}
@@ -19,8 +21,8 @@ export function Home({ setView }) {
                         All your semester study materials, PYQs, faculty notes, and academic resources — centralized in one place.
                     </p>
                     <div className="hero-cta fu" style={{ animationDelay: ".24s" }}>
-                        <button className="btn btn-gold" style={{ padding: "13px 30px", fontSize: 15 }} onClick={() => setView("stu-login")}>📚 Browse as Student</button>
-                        <button className="btn btn-out" style={{ color: "#fff", borderColor: "rgba(255,255,255,.35)", padding: "13px 28px", fontSize: 15 }} onClick={() => setView("fac-login")}>👨‍🏫 Faculty Login</button>
+                        <button className="btn btn-gold" style={{ padding: "13px 30px", fontSize: 15 }} onClick={() => navigate("/student-login")}>📚 Browse as Student</button>
+                        <button className="btn btn-out" style={{ color: "#fff", borderColor: "rgba(255,255,255,.35)", padding: "13px 28px", fontSize: 15 }} onClick={() => navigate("/faculty-login")}>👨‍🏫 Faculty Login</button>
                     </div>
                     <div className="hero-stats fu" style={{ animationDelay: ".32s" }}>
                         {[["8,000+", "Students"], ["200+", "Materials"], ["45+", "Faculty"], ["8", "Schools"]].map(([n, l], i) => (
@@ -74,7 +76,7 @@ export function Home({ setView }) {
                 </div>
                 <div className="schools-grid">
                     {SCHOOLS.map((s, i) => (
-                        <div className="school-card" key={i} onClick={() => setView("stu-login")}>
+                        <div className="school-card" key={i} onClick={() => navigate("/student-login")}>
                             <span className="sc-emoji">{s.emoji}</span>
                             <div className="sc-name">{s.name}</div>
                             <div className="sc-cnt">{s.cnt}</div>

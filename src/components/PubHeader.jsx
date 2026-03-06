@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { NotifDrop } from './NotifDrop';
 
-export function PubHeader({ setView, dark, toggleDark }) {
+export function PubHeader({ dark, toggleDark }) {
     const [nd, setNd] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <header className="hdr">
-            <div className="logo" onClick={() => setView("home")}>
+            <div className="logo" onClick={() => navigate("/")}>
                 <div className="logo-ico">S</div>
                 <div>
                     <div className="logo-name">SAGE University</div>
@@ -27,10 +29,10 @@ export function PubHeader({ setView, dark, toggleDark }) {
                 <button className="ico-btn" onClick={toggleDark}>
                     {dark ? "☀️" : "🌙"}
                 </button>
-                <button className="btn btn-out btn-sm" onClick={() => setView("stu-login")}>
+                <button className="btn btn-out btn-sm" onClick={() => navigate("/student-login")}>
                     Student Login
                 </button>
-                <button className="btn btn-navy btn-sm" onClick={() => setView("fac-login")}>
+                <button className="btn btn-navy btn-sm" onClick={() => navigate("/faculty-login")}>
                     Faculty Login
                 </button>
             </div>
