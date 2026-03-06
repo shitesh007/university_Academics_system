@@ -16,8 +16,9 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const loginUser = async (username, password) => {
+        const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/token/', {
+            const response = await fetch(`${API_URL}/token/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
