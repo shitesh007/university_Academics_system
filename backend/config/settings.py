@@ -125,9 +125,11 @@ SIMPLE_JWT = {
 
 # ─── Production Security (auto-enabled when DEBUG=False) ─────────────────────────
 if not DEBUG:
+    # Railway handles SSL at proxy level — tell Django to trust the forwarded header
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Do NOT set SECURE_SSL_REDIRECT=True — Railway proxy causes infinite redirect loop
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
