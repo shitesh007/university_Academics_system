@@ -108,7 +108,7 @@ export function Home({ setView }) {
                     ].map(([title, links], i) => (
                         <div key={i}>
                             <div className="f-title">{title}</div>
-                            {links.map((l, j) => <a key={j} href="#" className="f-link" onClick={e => e.preventDefault()}>{l}</a>)}
+                            {links.map((l, j) => <button key={j} className="f-link" style={{ background: "none", border: "none", cursor: "pointer", padding: 0, font: "inherit" }}>{l}</button>)}
                         </div>
                     ))}
                 </div>
