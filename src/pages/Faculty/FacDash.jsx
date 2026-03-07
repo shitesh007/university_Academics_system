@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import { NotifDrop } from '../../components/NotifDrop';
 import { FacOverview, FacUpload, FacSubjects, FacQueries, FacAnnounce, FacProfile } from './FacDashPages';
 
@@ -15,7 +16,8 @@ const FAC_TITLES = {
     overview: "Faculty Dashboard", upload: "Upload Material", subjects: "Manage Subjects", queries: "Student Queries", announce: "Announcements", profile: "Faculty Profile"
 };
 
-export function FacDash({ setView, dark, toggleDark }) {
+export function FacDash({ dark, toggleDark }) {
+    const { logoutUser } = useContext(AuthContext);
     const [page, setPage] = useState("overview");
     const [sbOpen, setSbOpen] = useState(false);
     const [nd, setNd] = useState(false);
@@ -53,7 +55,7 @@ export function FacDash({ setView, dark, toggleDark }) {
                     ))}
                 </div>
                 <div className="sb-foot">
-                    <div className="sb-item" style={{ color: "rgba(225,29,72,.75)" }} onClick={() => setView("home")}><span className="sb-ico">🚪</span>Logout</div>
+                    <div className="sb-item" style={{ color: "rgba(225,29,72,.75)" }} onClick={logoutUser}><span className="sb-ico">🚪</span>Logout</div>
                 </div>
             </div>
             <div className="main">

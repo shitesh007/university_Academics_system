@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import { NotifDrop } from '../../components/NotifDrop';
 import { STUDENT_DATA } from '../../data/mockData';
 import { StuOverview, StuActivity, StuSubjects, StuMaterials, StuAssignments, StuExams, StuPerf, StuRec, StuProfile } from './StuDashPages';
@@ -21,7 +22,8 @@ const STU_TITLES = {
     performance: "Performance Analytics", rec: "Recommendations", profile: "My Profile"
 };
 
-export function StuDash({ setView, dark, toggleDark }) {
+export function StuDash({ dark, toggleDark }) {
+    const { logoutUser } = useContext(AuthContext);
     const [page, setPage] = useState("overview");
     const [sbOpen, setSbOpen] = useState(false);
     const [nd, setNd] = useState(false);
@@ -67,7 +69,7 @@ export function StuDash({ setView, dark, toggleDark }) {
                     ))}
                 </div>
                 <div className="sb-foot">
-                    <div className="sb-item" style={{ color: "rgba(225,29,72,.75)" }} onClick={() => setView("home")}>
+                    <div className="sb-item" style={{ color: "rgba(225,29,72,.75)" }} onClick={logoutUser}>
                         <span className="sb-ico">🚪</span>Logout
                     </div>
                 </div>
