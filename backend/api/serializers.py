@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User, Student, Faculty, Subject, Enrollment, Material, Assignment, Submission, Query
+from .models import User, School, Student, Faculty, Subject, Enrollment, Material, Assignment, Submission, Query
+
+class SchoolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = School
+        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,6 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    school = SchoolSerializer(read_only=True)
 
     class Meta:
         model = Student
@@ -16,6 +22,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
 class FacultySerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    school = SchoolSerializer(read_only=True)
 
     class Meta:
         model = Faculty
@@ -37,6 +44,8 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 
 class MaterialSerializer(serializers.ModelSerializer):
     subject_code = serializers.CharField(source='subject.code', read_only=True)
+    subject_name = serializers.CharField(source='subject.name', read_only=True)
+    uploaded_by_name = serializers.CharField(source='uploaded_by.user.get_full_name', read_only=True)
     
     class Meta:
         model = Material
@@ -71,6 +80,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['role'] = getattr(user, 'role', '')
         token['name'] = user.get_full_name() or user.username
+        
+        if hasattr(user, 'student'):
+            token['school_code'] = user.student.school.code if getattr(user.student, 'school', None) else ''
+            token['school_name'] = user.student.school.name if getattr(user.student, 'school', None) else ''
+            token['semester'] = user.student.semester
+        elif hasattr(user, 'faculty'):
+            token['school_code'] = user.faculty.school.code if getattr(user.faculty, 'school', None) else ''
+            token['school_name'] = user.faculty.school.name if getattr(user.faculty, 'school', None) else ''
         
         return token
 

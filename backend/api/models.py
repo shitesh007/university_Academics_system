@@ -1,6 +1,17 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
+class School(models.Model):
+    name = models.CharField(max_length=200)
+    code = models.CharField(max_length=20, unique=True)  # SOE, SOB, SOL etc.
+    emoji = models.CharField(max_length=10, default='🏫')
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.emoji} {self.name} ({self.code})"
+
+
 class User(AbstractUser):
     ROLE_CHOICES = (
         ('student', 'Student'),
@@ -19,6 +30,7 @@ class Student(models.Model):
     roll_number = models.CharField(max_length=50, unique=True)
     semester = models.IntegerField(default=1)
     branch = models.CharField(max_length=100)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, related_name='students')
     cgpa = models.DecimalField(max_digits=4, decimal_places=2, default=0.0)
 
     def __str__(self):
@@ -29,6 +41,7 @@ class Faculty(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     faculty_id = models.CharField(max_length=50, unique=True)
     department = models.CharField(max_length=100)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, related_name='faculty_members')
 
     def __str__(self):
         return f"Dr. {self.user.last_name} - {self.department}"
@@ -39,10 +52,11 @@ class Subject(models.Model):
     name = models.CharField(max_length=200)
     credits = models.IntegerField(default=3)
     semester = models.IntegerField()
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='subjects', null=True)
     faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True, related_name='subjects')
 
     def __str__(self):
-        return f"{self.name} ({self.code})"
+        return f"{self.name} ({self.code}) - Sem {self.semester}"
 
 
 class Enrollment(models.Model):
@@ -59,24 +73,23 @@ class Enrollment(models.Model):
 
 class Material(models.Model):
     CATEGORY_CHOICES = (
-        ('notes', 'Notes'),
-        ('ebook', 'E-book'),
-        ('pyq', 'PYQs'),
-        ('video', 'Tutorial Video'),
-        ('topic', 'Important Topics'),
-        ('assignment', 'Assignment'),
-        ('other', 'Other'),
+        ('notes', 'Unit Notes'),
+        ('pyq', 'Previous Year Questions'),
+        ('important', 'Important Questions'),
+        ('tutorial', 'Tutorial / Video'),
+        ('ebook', 'E-Book / Reference'),
     )
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='materials')
     uploaded_by = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='uploaded_materials')
     title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     file_url = models.URLField(max_length=500)
     upload_date = models.DateTimeField(auto_now_add=True)
     size_mb = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
 
     def __str__(self):
-        return f"{self.title} ({self.subject.code})"
+        return f"{self.title} ({self.subject.code}) [{self.category}]"
 
 
 class Assignment(models.Model):

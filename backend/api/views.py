@@ -1,10 +1,11 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsFaculty
-from .models import Student, Faculty, Subject, Enrollment, Material, Assignment, Submission, Query
+from .models import School, Student, Faculty, Subject, Enrollment, Material, Assignment, Submission, Query
 from .serializers import (
-    StudentSerializer, FacultySerializer, SubjectSerializer, 
+    SchoolSerializer, StudentSerializer, FacultySerializer, SubjectSerializer, 
     EnrollmentSerializer, MaterialSerializer, AssignmentSerializer, 
     SubmissionSerializer, QuerySerializer, CustomTokenObtainPairSerializer
 )
@@ -21,8 +22,16 @@ class FacultyViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FacultySerializer
 
 class SubjectViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if getattr(user, 'role', None) == 'student' and hasattr(user, 'student'):
+            return Subject.objects.filter(school=user.student.school)
+        elif getattr(user, 'role', None) == 'faculty' and hasattr(user, 'faculty'):
+            return Subject.objects.filter(school=user.faculty.school)
+        return Subject.objects.none()
 
 class EnrollmentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = EnrollmentSerializer
@@ -34,9 +43,38 @@ class EnrollmentViewSet(viewsets.ReadOnlyModelViewSet):
         return Enrollment.objects.all()
 
 class MaterialViewSet(viewsets.ModelViewSet):
-    queryset = Material.objects.all()
     serializer_class = MaterialSerializer
-    permission_classes = [IsAuthenticated, IsFaculty]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if getattr(user, 'role', None) == 'student' and hasattr(user, 'student'):
+            # Students see materials for their school and semester ONLY
+            return Material.objects.filter(
+                subject__school=user.student.school,
+                subject__semester=user.student.semester
+            )
+        elif getattr(user, 'role', None) == 'faculty' and hasattr(user, 'faculty'):
+            # Faculty see materials for their school ONLY
+            return Material.objects.filter(subject__school=user.faculty.school)
+        return Material.objects.none()
+
+    def create(self, request, *args, **kwargs):
+        # Only faculty can upload
+        if getattr(request.user, 'role', None) != 'faculty':
+            return Response({"detail": "Only faculty can upload materials"}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Enforce faculty ownership
+        subject_id = request.data.get('subject')
+        try:
+            subject = Subject.objects.get(id=subject_id)
+            if subject.school != request.user.faculty.school:
+                return Response({"detail": "Cannot upload material to a different school"}, status=status.HTTP_403_FORBIDDEN)
+        except Subject.DoesNotExist:
+            return Response({"detail": "Invalid subject"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Proceed with normal creation
+        return super().create(request, *args, **kwargs)
 
 class AssignmentViewSet(viewsets.ModelViewSet):
     queryset = Assignment.objects.all()
