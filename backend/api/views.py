@@ -49,14 +49,14 @@ class MaterialViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if getattr(user, 'role', None) == 'student' and hasattr(user, 'student'):
-            # Students see materials for their school and semester ONLY
+            # Students see materials for their school_id and semester ONLY
             return Material.objects.filter(
-                subject__school=user.student.school,
+                subject__school_id=user.student.school_id,
                 subject__semester=user.student.semester
             )
         elif getattr(user, 'role', None) == 'faculty' and hasattr(user, 'faculty'):
-            # Faculty see materials for their school ONLY
-            return Material.objects.filter(subject__school=user.faculty.school)
+            # Faculty see materials for their school_id ONLY
+            return Material.objects.filter(subject__school_id=user.faculty.school_id)
         return Material.objects.none()
 
     def create(self, request, *args, **kwargs):
@@ -64,11 +64,11 @@ class MaterialViewSet(viewsets.ModelViewSet):
         if getattr(request.user, 'role', None) != 'faculty':
             return Response({"detail": "Only faculty can upload materials"}, status=status.HTTP_403_FORBIDDEN)
         
-        # Enforce faculty ownership
+        # Enforce faculty ownership via school_id
         subject_id = request.data.get('subject')
         try:
             subject = Subject.objects.get(id=subject_id)
-            if subject.school != request.user.faculty.school:
+            if subject.school_id != request.user.faculty.school_id:
                 return Response({"detail": "Cannot upload material to a different school"}, status=status.HTTP_403_FORBIDDEN)
         except Subject.DoesNotExist:
             return Response({"detail": "Invalid subject"}, status=status.HTTP_400_BAD_REQUEST)

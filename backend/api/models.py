@@ -8,6 +8,10 @@ class School(models.Model):
     emoji = models.CharField(max_length=10, default='🏫')
     description = models.TextField(blank=True)
 
+    class Meta:
+        db_table = 'Schools'
+        managed = True
+
     def __str__(self):
         return f"{self.emoji} {self.name} ({self.code})"
 
@@ -21,6 +25,10 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
     profile_picture = models.URLField(blank=True, null=True)
 
+    class Meta:
+        db_table = 'Users'
+        managed = True
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"
 
@@ -33,6 +41,10 @@ class Student(models.Model):
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, related_name='students')
     cgpa = models.DecimalField(max_digits=4, decimal_places=2, default=0.0)
 
+    class Meta:
+        db_table = 'Student_Profiles'
+        managed = True
+
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.roll_number}"
 
@@ -42,6 +54,10 @@ class Faculty(models.Model):
     faculty_id = models.CharField(max_length=50, unique=True)
     department = models.CharField(max_length=100)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, related_name='faculty_members')
+
+    class Meta:
+        db_table = 'Faculty_Profiles'
+        managed = True
 
     def __str__(self):
         return f"Dr. {self.user.last_name} - {self.department}"
@@ -54,6 +70,10 @@ class Subject(models.Model):
     semester = models.IntegerField()
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='subjects', null=True)
     faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True, related_name='subjects')
+
+    class Meta:
+        db_table = 'Subjects'
+        managed = True
 
     def __str__(self):
         return f"{self.name} ({self.code}) - Sem {self.semester}"
@@ -87,6 +107,10 @@ class Material(models.Model):
     file_url = models.URLField(max_length=500)
     upload_date = models.DateTimeField(auto_now_add=True)
     size_mb = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+
+    class Meta:
+        db_table = 'Study_Materials'
+        managed = True
 
     def __str__(self):
         return f"{self.title} ({self.subject.code}) [{self.category}]"

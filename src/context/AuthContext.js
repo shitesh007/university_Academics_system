@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const loginUser = async (username, password) => {
-        const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
+        const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
         try {
             const response = await fetch(`${API_URL}/token/`, {
                 method: 'POST',
@@ -32,15 +32,15 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('authTokens', JSON.stringify(data));
                 toast.success(`Welcome back, ${decoded.name}! 👋`);
 
-                const savedSchool = localStorage.getItem('redirectSchool');
-                if (savedSchool) {
-                    localStorage.removeItem('redirectSchool');
+                const savedSchoolId = localStorage.getItem('redirectSchoolId');
+                if (savedSchoolId) {
+                    localStorage.removeItem('redirectSchoolId');
                 }
 
                 if (decoded.role === 'faculty') {
                     navigate('/faculty-dashboard');
                 } else {
-                    if (savedSchool) {
+                    if (savedSchoolId) {
                         navigate('/student-dashboard', { state: { activeTab: 'materials' } });
                     } else {
                         navigate('/student-dashboard');

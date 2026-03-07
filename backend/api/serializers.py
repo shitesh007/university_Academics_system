@@ -82,10 +82,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['name'] = user.get_full_name() or user.username
         
         if hasattr(user, 'student'):
+            token['school_id'] = user.student.school.id if getattr(user.student, 'school', None) else None
             token['school_code'] = user.student.school.code if getattr(user.student, 'school', None) else ''
             token['school_name'] = user.student.school.name if getattr(user.student, 'school', None) else ''
             token['semester'] = user.student.semester
         elif hasattr(user, 'faculty'):
+            token['school_id'] = user.faculty.school.id if getattr(user.faculty, 'school', None) else None
             token['school_code'] = user.faculty.school.code if getattr(user.faculty, 'school', None) else ''
             token['school_name'] = user.faculty.school.name if getattr(user.faculty, 'school', None) else ''
         
