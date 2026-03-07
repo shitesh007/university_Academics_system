@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { SUBJECTS, SCHOOLS, QUERIES } from '../../data/mockData';
+import { api } from '../../services/api';
 
 const RECENT_ACT = [
     { c: "#22C55E", t: "Uploaded 'Unit 3 – Trees Notes' to CS-301", time: "2 hours ago" },
@@ -63,6 +64,12 @@ export function FacOverview({ setPage }) {
 export function FacUpload() {
     const { user } = useContext(AuthContext);
     const [status, setStatus] = useState("");
+    const [facultySubjects, setFacultySubjects] = useState([]);
+
+    useEffect(() => {
+        api.getSubjects().then(res => setFacultySubjects(res)).catch(console.error);
+    }, []);
+
     const go = () => { setStatus("loading"); setTimeout(() => setStatus("done"), 2000); setTimeout(() => setStatus(""), 5000); };
     return (
         <div className="fi">
@@ -74,7 +81,7 @@ export function FacUpload() {
                         <label className="fld-label">Assigned School</label>
                         <input className="fld-input" value={user?.school_name || "School Name"} disabled style={{ background: "var(--surface)", opacity: 0.7 }} title="Locked to your assigned school" />
                     </div>
-                    {[["Select Semester", "select", [1, 2, 3, 4, 5, 6, 7, 8].map(n => `Semester ${n}`)], ["Select Subject", "select", SUBJECTS.map(s => `${s.name} (${s.code})`)], ["Material Category", "select", ["Notes", "E-book", "PYQs", "Tutorial Video", "Important Topics", "Assignment", "Other"]]].map(([l, type, opts], i) => (
+                    {[["Select Semester", "select", [1, 2, 3, 4, 5, 6, 7, 8].map(n => `Semester ${n}`)], ["Select Subject", "select", facultySubjects.map(s => `${s.name} (${s.code})`)], ["Material Category", "select", ["Notes", "E-book", "PYQs", "Tutorial Video", "Important Topics", "Assignment", "Other"]]].map(([l, type, opts], i) => (
                         <div className="fld" key={i}>
                             <label className="fld-label">{l}</label>
                             <select style={{ width: "100%", padding: "11px 14px", border: "1.5px solid var(--border)", borderRadius: "var(--r-sm)", background: "var(--surface)", fontFamily: "Sora,sans-serif", fontSize: 13, color: "var(--navy)", outline: "none" }}>

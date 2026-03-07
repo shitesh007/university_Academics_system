@@ -54,10 +54,10 @@ export function StuDash({ dark, toggleDark }) {
                     </div>
                 </div>
                 <div className="sb-profile">
-                    <div className="sb-avatar">{STUDENT_DATA.initials}</div>
+                    <div className="sb-avatar">{user?.name ? user.name.charAt(0).toUpperCase() : "S"}</div>
                     <div>
-                        <div className="sb-name">{STUDENT_DATA.name}</div>
-                        <div className="sb-roll">{STUDENT_DATA.roll}</div>
+                        <div className="sb-name">{user?.name || "Student User"}</div>
+                        <div className="sb-roll">{user?.username || "SAGE-XX"}</div>
                         <div className="sb-online">Online</div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ export function StuDash({ dark, toggleDark }) {
                             <button className="ico-btn" onClick={() => setNd(p => !p)}>🔔<div className="notif-dot" /></button>
                             {nd && <NotifDrop onClose={() => setNd(false)} />}
                         </div>
-                        <div className="sb-avatar" style={{ width: 34, height: 34, borderRadius: 9, fontSize: 12 }}>{STUDENT_DATA.initials}</div>
+                        <div className="sb-avatar" style={{ width: 34, height: 34, borderRadius: 9, fontSize: 12 }}>{user?.name ? user.name.charAt(0).toUpperCase() : "S"}</div>
                     </div>
                 </div>
                 <div className="content">{P[page] || P.overview}</div>
