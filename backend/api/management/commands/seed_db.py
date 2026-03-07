@@ -7,20 +7,14 @@ class Command(BaseCommand):
     help = 'Seeds the database with initial mock data from the React frontend'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write('Clearing existing data...')
-        Query.objects.all().delete()
-        Submission.objects.all().delete()
-        Assignment.objects.all().delete()
-        Material.objects.all().delete()
-        Enrollment.objects.all().delete()
-        Subject.objects.all().delete()
-        Student.objects.all().delete()
-        Faculty.objects.all().delete()
-        User.objects.filter(is_superuser=False).delete()
+        # Only seed if no users exist yet (safe to run on every startup)
+        if User.objects.filter(is_superuser=False).exists():
+            self.stdout.write('Database already seeded. Skipping.')
+            return
 
         self.stdout.write('Creating Faculty...')
         faculty_user = User.objects.create_user(
-            username='r.mishra',
+            username='r_mishra',
             email='r.mishra@sageuniversity.edu.in',
             password='faculty@2025',
             first_name='Rahul',
@@ -35,7 +29,7 @@ class Command(BaseCommand):
 
         self.stdout.write('Creating Student...')
         student_user = User.objects.create_user(
-            username='aditya.sharma',
+            username='aditya_sharma',
             email='aditya.sharma@sageuniversity.edu.in',
             password='sage@2025',
             first_name='Aditya',
