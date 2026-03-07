@@ -32,15 +32,15 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('authTokens', JSON.stringify(data));
                 toast.success(`Welcome back, ${decoded.name}! 👋`);
 
-                const savedSchoolId = localStorage.getItem('redirectSchoolId');
-                if (savedSchoolId) {
-                    localStorage.removeItem('redirectSchoolId');
+                const selectedSchoolId = localStorage.getItem('selectedSchoolId');
+                if (selectedSchoolId) {
+                    localStorage.removeItem('selectedSchoolId');
                 }
 
                 if (decoded.role === 'faculty') {
                     navigate('/faculty-dashboard');
                 } else {
-                    if (savedSchoolId) {
+                    if (selectedSchoolId && parseInt(selectedSchoolId) === decoded.school_id) {
                         navigate('/student-dashboard', { state: { activeTab: 'materials' } });
                     } else {
                         navigate('/student-dashboard');
