@@ -76,7 +76,10 @@ export function Home() {
                 </div>
                 <div className="schools-grid">
                     {SCHOOLS.map((s, i) => (
-                        <div className="school-card" key={i} onClick={() => navigate("/student-login")}>
+                        <div className="school-card" key={i} onClick={() => {
+                            localStorage.setItem('redirectSchool', s.name);
+                            navigate("/student-login");
+                        }}>
                             <span className="sc-emoji">{s.emoji}</span>
                             <div className="sc-name">{s.name}</div>
                             <div className="sc-cnt">{s.cnt}</div>

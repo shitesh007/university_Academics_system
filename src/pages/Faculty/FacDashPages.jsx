@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import { SUBJECTS, SCHOOLS, QUERIES } from '../../data/mockData';
 
 const RECENT_ACT = [
@@ -9,9 +10,10 @@ const RECENT_ACT = [
 ];
 
 export function FacOverview({ setPage }) {
+    const { user } = useContext(AuthContext);
     return (
         <div className="fi">
-            <div style={{ fontFamily: "Lora,serif", fontWeight: 700, fontSize: 22, color: "var(--navy)", marginBottom: 3 }}>Good Morning, Dr. Rahul! 👋</div>
+            <div style={{ fontFamily: "Lora,serif", fontWeight: 700, fontSize: 22, color: "var(--navy)", marginBottom: 3 }}>Good Morning, {user?.name || "Dr. Rahul"}! 👋</div>
             <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 18 }}>Here's your portal activity summary for today.</div>
             <div className="ann">
                 <span className="ann-ico">🗓️</span>
@@ -59,6 +61,7 @@ export function FacOverview({ setPage }) {
 }
 
 export function FacUpload() {
+    const { user } = useContext(AuthContext);
     const [status, setStatus] = useState("");
     const go = () => { setStatus("loading"); setTimeout(() => setStatus("done"), 2000); setTimeout(() => setStatus(""), 5000); };
     return (
@@ -67,7 +70,11 @@ export function FacUpload() {
             <div className="g2" style={{ alignItems: "start" }}>
                 <div className="card cp">
                     <div className="ct">📋 Material Details</div>
-                    {[["Select School", "select", SCHOOLS.map(s => s.name)], ["Select Semester", "select", [1, 2, 3, 4, 5, 6, 7, 8].map(n => `Semester ${n}`)], ["Select Subject", "select", SUBJECTS.map(s => `${s.name} (${s.code})`)], ["Material Category", "select", ["Notes", "E-book", "PYQs", "Tutorial Video", "Important Topics", "Assignment", "Other"]]].map(([l, type, opts], i) => (
+                    <div className="fld">
+                        <label className="fld-label">Assigned School</label>
+                        <input className="fld-input" value={user?.school_name || "School Name"} disabled style={{ background: "var(--surface)", opacity: 0.7 }} title="Locked to your assigned school" />
+                    </div>
+                    {[["Select Semester", "select", [1, 2, 3, 4, 5, 6, 7, 8].map(n => `Semester ${n}`)], ["Select Subject", "select", SUBJECTS.map(s => `${s.name} (${s.code})`)], ["Material Category", "select", ["Notes", "E-book", "PYQs", "Tutorial Video", "Important Topics", "Assignment", "Other"]]].map(([l, type, opts], i) => (
                         <div className="fld" key={i}>
                             <label className="fld-label">{l}</label>
                             <select style={{ width: "100%", padding: "11px 14px", border: "1.5px solid var(--border)", borderRadius: "var(--r-sm)", background: "var(--surface)", fontFamily: "Sora,sans-serif", fontSize: 13, color: "var(--navy)", outline: "none" }}>
@@ -203,26 +210,27 @@ export function FacAnnounce() {
 }
 
 export function FacProfile() {
+    const { user } = useContext(AuthContext);
     return (
         <div className="fi g2" style={{ alignItems: "start" }}>
             <div className="card cp">
                 <div style={{ display: "flex", alignItems: "center", gap: 15, marginBottom: 22 }}>
                     <div className="sb-avatar f-avatar" style={{ width: 66, height: 66, borderRadius: 14, fontSize: 20, flexShrink: 0 }}>DR</div>
                     <div>
-                        <div style={{ fontFamily: "Lora,serif", fontWeight: 700, fontSize: 19, color: "var(--navy)" }}>Dr. Rahul Mishra</div>
-                        <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 3 }}>Associate Professor · CS & E</div>
+                        <div style={{ fontFamily: "Lora,serif", fontWeight: 700, fontSize: 19, color: "var(--navy)" }}>{user?.name || "Dr. Rahul Mishra"}</div>
+                        <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 3 }}>Faculty Member · {user?.school_name || "Department"}</div>
                         <div style={{ display: "flex", gap: 7, marginTop: 7, flexWrap: "wrap" }}>
-                            <span style={{ background: "rgba(217,119,6,.1)", color: "var(--gold)", padding: "2px 9px", borderRadius: 100, fontSize: 11, fontWeight: 700 }}>CS Department</span>
+                            <span style={{ background: "rgba(217,119,6,.1)", color: "var(--gold)", padding: "2px 9px", borderRadius: 100, fontSize: 11, fontWeight: 700 }}>{user?.school_code || "Code"}</span>
                             <span style={{ background: "rgba(37,99,235,.1)", color: "var(--blue)", padding: "2px 9px", borderRadius: 100, fontSize: 11, fontWeight: 700 }}>6 Subjects</span>
                         </div>
                     </div>
                 </div>
                 <div className="divider" />
                 <div className="ct">Edit Profile</div>
-                {[["Full Name", "Dr. Rahul Mishra"], ["Email", "r.mishra@sageuniversity.edu.in"], ["Department", "Computer Science & Engineering"], ["Designation", "Associate Professor"], ["University ID", "SAGE-FAC-2024-0042"]].map(([l, v], i) => (
+                {[["Full Name", user?.name || "Dr. Rahul Mishra"], ["Username", user?.username || "r_mishra"], ["Department", user?.school_name || "Computer Science & Engineering"], ["Designation", "Associate Professor"]].map(([l, v], i) => (
                     <div className="fld" key={i}>
                         <label className="fld-label">{l}</label>
-                        <input className="fld-input" defaultValue={v} style={{ paddingLeft: 14 }} />
+                        <input className="fld-input" defaultValue={v} style={{ paddingLeft: 14, background: "var(--surface)" }} disabled />
                     </div>
                 ))}
                 <button className="btn btn-navy" style={{ padding: "11px 26px", fontSize: 13 }}>💾 Save Changes</button>

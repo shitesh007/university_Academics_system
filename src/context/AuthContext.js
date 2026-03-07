@@ -31,8 +31,21 @@ export const AuthProvider = ({ children }) => {
                 setUser(decoded);
                 localStorage.setItem('authTokens', JSON.stringify(data));
                 toast.success(`Welcome back, ${decoded.name}! 👋`);
-                // Role-based redirect
-                navigate(decoded.role === 'faculty' ? '/faculty-dashboard' : '/student-dashboard');
+
+                const savedSchool = localStorage.getItem('redirectSchool');
+                if (savedSchool) {
+                    localStorage.removeItem('redirectSchool');
+                }
+
+                if (decoded.role === 'faculty') {
+                    navigate('/faculty-dashboard');
+                } else {
+                    if (savedSchool) {
+                        navigate('/student-dashboard', { state: { activeTab: 'materials' } });
+                    } else {
+                        navigate('/student-dashboard');
+                    }
+                }
                 return { success: true };
             } else {
                 toast.error('Invalid credentials. Please try again.');

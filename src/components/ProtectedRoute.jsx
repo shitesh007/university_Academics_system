@@ -5,9 +5,9 @@ import { AuthContext } from '../context/AuthContext';
 export const ProtectedRoute = ({ children, allowedRole }) => {
     const { user } = useContext(AuthContext);
 
-    // If no user is logged in, redirect to the respective login page or home
+    // If no user is logged in, redirect to the respective login page
     if (!user) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/student-login" replace />;
     }
 
     // Role-Based Routing

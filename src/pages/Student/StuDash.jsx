@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { NotifDrop } from '../../components/NotifDrop';
 import { STUDENT_DATA } from '../../data/mockData';
@@ -23,8 +24,9 @@ const STU_TITLES = {
 };
 
 export function StuDash({ dark, toggleDark }) {
-    const { logoutUser } = useContext(AuthContext);
-    const [page, setPage] = useState("overview");
+    const { logoutUser, user } = useContext(AuthContext);
+    const location = useLocation();
+    const [page, setPage] = useState(location.state?.activeTab || "overview");
     const [sbOpen, setSbOpen] = useState(false);
     const [nd, setNd] = useState(false);
 
@@ -48,7 +50,7 @@ export function StuDash({ dark, toggleDark }) {
                 <div className="sb-head">
                     <div className="sb-logo">
                         <div className="sb-badge">S</div>
-                        <div><div className="sb-title">SAGE University</div><div className="sb-sub">Academic Portal</div></div>
+                        <div><div className="sb-title">SAGE University</div><div className="sb-sub">{user?.school_code || "Academic Portal"}</div></div>
                     </div>
                 </div>
                 <div className="sb-profile">
@@ -79,7 +81,7 @@ export function StuDash({ dark, toggleDark }) {
                 <div className="topbar">
                     <div className="tb-left">
                         <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 19 }} onClick={() => setSbOpen(p => !p)}>☰</button>
-                        <div><div className="tb-title">{STU_TITLES[page]}</div><div className="tb-sub">Semester {STUDENT_DATA.sem} · {STUDENT_DATA.branch}</div></div>
+                        <div><div className="tb-title">{STU_TITLES[page]}</div><div className="tb-sub">Semester {user?.semester || 1} · {user?.school_name || STUDENT_DATA.branch}</div></div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                         <div className="searchbar" style={{ display: "flex" }}><span style={{ fontSize: 13, opacity: .5 }}>🔍</span><input placeholder="Search…" style={{ width: 140 }} /></div>

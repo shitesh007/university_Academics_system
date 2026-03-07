@@ -17,7 +17,7 @@ const FAC_TITLES = {
 };
 
 export function FacDash({ dark, toggleDark }) {
-    const { logoutUser } = useContext(AuthContext);
+    const { logoutUser, user } = useContext(AuthContext);
     const [page, setPage] = useState("overview");
     const [sbOpen, setSbOpen] = useState(false);
     const [nd, setNd] = useState(false);
@@ -34,13 +34,13 @@ export function FacDash({ dark, toggleDark }) {
                 <div className="sb-head">
                     <div className="sb-logo">
                         <div className="sb-badge" style={{ background: "linear-gradient(135deg,#1A3270,#D97706)" }}>S</div>
-                        <div><div className="sb-title">SAGE University</div><div className="sb-sub">Faculty Portal</div></div>
+                        <div><div className="sb-title">SAGE University</div><div className="sb-sub">{user?.school_code || "Faculty Portal"}</div></div>
                     </div>
                 </div>
                 <div className="sb-profile">
                     <div className="sb-avatar f-avatar">DR</div>
                     <div>
-                        <div className="sb-name">Dr. Rahul Mishra</div>
+                        <div className="sb-name">{user?.name || "Faculty Member"}</div>
                         <div className="sb-roll" style={{ color: "var(--gold-lt)" }}>Faculty</div>
                         <div className="sb-online">Online</div>
                     </div>
@@ -62,7 +62,7 @@ export function FacDash({ dark, toggleDark }) {
                 <div className="topbar">
                     <div className="tb-left">
                         <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 19 }} onClick={() => setSbOpen(p => !p)}>☰</button>
-                        <div><div className="tb-title">{FAC_TITLES[page]}</div><div className="tb-sub">Computer Science & Engineering</div></div>
+                        <div><div className="tb-title">{FAC_TITLES[page]}</div><div className="tb-sub">{user?.school_name || "Assigned Department"}</div></div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                         <div className="searchbar" style={{ display: "flex" }}><span style={{ fontSize: 13, opacity: .5 }}>🔍</span><input placeholder="Search…" style={{ width: 140 }} /></div>
