@@ -11,19 +11,9 @@ export function StuOverview({ setPage, user }) {
                 <div className="w-orb" style={{ width: 200, height: 200, background: "#7C3AED", opacity: .08, bottom: -60, left: "40%" }} />
                 <div className="w-grid" />
                 <div className="w-inner">
-                    <div className="w-greeting">{new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} · Semester {user?.semester || 1}</div>
+                    <div className="w-greeting">{new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
                     <div className="w-name">Welcome back, <span>{user?.name?.split(' ')[0] || 'Student'}</span> 👋</div>
                     <div className="w-meta">{user?.school_name || 'SAGE University Portal'}</div>
-                    <div className="w-stats">
-                        {[
-                            ["8.4", "CGPA", "Target 9.0"],
-                            ["78%", "Attendance", "Min 75% required"],
-                            ["Active", "Status", "Enrolled"],
-                            [user?.semester || "1", "Semester", "Current"]
-                        ].map(([v, l, c], i) => (
-                            <div className="ws" key={i}><div className="ws-n">{v}</div><div className="ws-l">{l}</div><div className="ws-c">{c}</div></div>
-                        ))}
-                    </div>
                 </div>
             </div>
 

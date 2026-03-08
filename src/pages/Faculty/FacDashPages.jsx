@@ -126,24 +126,30 @@ export function FacUpload({ user }) {
 
     return (
         <div className="fi g2" style={{ alignItems: "start" }}>
-            <div className="card cp" style={{ position: "sticky", top: 20 }}>
-                <div className="ct">📤 Upload New Material</div>
+            <div className="card cp" style={{ position: "sticky", top: 20, border: "1px solid rgba(37,99,235,.2)", boxShadow: "0 10px 30px rgba(37,99,235,.05)" }}>
+                <div style={{ borderBottom: "1px solid var(--border)", paddingBottom: 12, marginBottom: 20, display: "flex", gap: 10, alignItems: "center" }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 10, background: "rgba(37,99,235,.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>📤</div>
+                    <div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: "var(--navy)" }}>Upload Study Material</div>
+                        <div style={{ fontSize: 12, color: "var(--muted)" }}>Securely share resources restricted to your department.</div>
+                    </div>
+                </div>
                 <form onSubmit={handleUpload}>
-                    <div style={{ marginBottom: 15 }}>
-                        <label className="lbl">Target School (Read-Only)</label>
-                        <input className="inp" value={user?.school_name || "Loading..."} readOnly style={{ background: "var(--surface)" }} />
+                    <div style={{ background: "rgba(37,99,235,.03)", border: "1px solid rgba(37,99,235,.1)", padding: 12, borderRadius: 8, marginBottom: 18 }}>
+                        <label className="lbl" style={{ color: "var(--blue)" }}>🏫 Target Department (Locked)</label>
+                        <input className="inp" value={user?.school_name || "Loading..."} readOnly style={{ background: "transparent", border: "none", padding: 0, fontWeight: 600, color: "var(--navy)", fontSize: 14, boxShadow: "none" }} />
                     </div>
 
                     <div style={{ display: "flex", gap: 15, marginBottom: 15 }}>
                         <div style={{ flex: 1 }}>
                             <label className="lbl">Semester</label>
-                            <select className="inp" value={semester} onChange={e => setSemester(e.target.value)} required>
+                            <select className="inp" value={semester} onChange={e => setSemester(e.target.value)} required style={{ background: "var(--surface)" }}>
                                 {[1, 2, 3, 4, 5, 6, 7, 8].map(s => <option key={s} value={s}>Semester {s}</option>)}
                             </select>
                         </div>
                         <div style={{ flex: 2 }}>
                             <label className="lbl">Subject</label>
-                            <select className="inp" value={subjectId} onChange={e => setSubjectId(e.target.value)} required disabled={availableSubjects.length === 0}>
+                            <select className="inp" value={subjectId} onChange={e => setSubjectId(e.target.value)} required disabled={availableSubjects.length === 0} style={{ background: "var(--surface)" }}>
                                 {availableSubjects.length === 0 ? <option value="">No subjects found</option> : availableSubjects.map(s => (
                                     <option key={s.id} value={s.id}>{s.code} - {s.name}</option>
                                 ))}
@@ -154,9 +160,9 @@ export function FacUpload({ user }) {
                     <div style={{ display: "flex", gap: 15, marginBottom: 15 }}>
                         <div style={{ flex: 1 }}>
                             <label className="lbl">Category</label>
-                            <select className="inp" value={category} onChange={e => setCategory(e.target.value)} required>
-                                <option value="notes">Notes/Lecture Slides</option>
-                                <option value="pyq">Previous Year Questions</option>
+                            <select className="inp" value={category} onChange={e => setCategory(e.target.value)} required style={{ background: "var(--surface)" }}>
+                                <option value="notes">Notes & Slides</option>
+                                <option value="pyq">Previous Year Papers</option>
                                 <option value="ebook">Reference E-Book</option>
                             </select>
                         </div>
@@ -166,13 +172,22 @@ export function FacUpload({ user }) {
                         </div>
                     </div>
 
-                    <div style={{ marginBottom: 20 }}>
-                        <label className="lbl">Direct File URL (Drive/Cloud Link)</label>
-                        <input className="inp" type="url" placeholder="https://" value={fileUrl} onChange={e => setFileUrl(e.target.value)} required />
+                    <div style={{ marginBottom: 24, padding: 16, border: "2px dashed var(--border)", borderRadius: 10, background: "var(--surface)", transition: "all .3s ease" }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = "var(--blue)"}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border)"}>
+
+                        <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 8 }}>
+                            <span style={{ fontSize: 20 }}>🔗</span>
+                            <div>
+                                <label className="lbl" style={{ margin: 0, color: "var(--navy)", fontSize: 13, fontWeight: 600 }}>Resource Link / File URL</label>
+                                <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>Accepts links from Google Drive, OneDrive, DropBox, or any direct file URL.</div>
+                            </div>
+                        </div>
+                        <input className="inp" type="url" placeholder="Paste your link here (https://...)" value={fileUrl} onChange={e => setFileUrl(e.target.value)} required style={{ background: "#fff", borderColor: "rgba(37,99,235,.2)" }} />
                     </div>
 
-                    <button type="submit" className="btn btn-navy" style={{ width: "100%", justifyContent: "center" }} disabled={isUploading || !subjectId}>
-                        {isUploading ? "Processing..." : "Submit Material"}
+                    <button type="submit" className="btn btn-navy" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: 14, background: "linear-gradient(135deg,#1A3270,#2563EB)", boxShadow: "0 8px 20px rgba(37,99,235,.25)", border: "none" }} disabled={isUploading || !subjectId}>
+                        {isUploading ? <><span style={{ animation: "spin .7s linear infinite", display: "inline-block", marginRight: 7 }}>⟳</span>Uploading Resource...</> : "🚀 Publish Material"}
                     </button>
                 </form>
             </div>

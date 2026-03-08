@@ -20,10 +20,6 @@ export function FacLogin() {
         // On success, AuthContext.loginUser() auto-navigates to /faculty-dashboard
     };
 
-    const demo = async () => {
-        setF({ username: "r_mishra", pass: "faculty@2025" });
-    };
-
     const handleKeyDown = (e) => { if (e.key === 'Enter') go(); };
 
     return (
@@ -55,17 +51,6 @@ export function FacLogin() {
                     {loading ? <><span style={{ animation: "spin .7s linear infinite", display: "inline-block", marginRight: 7 }}>⟳</span>Verifying…</> : "🔐 Login to Dashboard →"}
                 </button>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "16px 0", fontSize: 12, color: "var(--muted2)" }}>
-                    <div style={{ flex: 1, height: 1, background: "var(--border)" }} />Quick Login<div style={{ flex: 1, height: 1, background: "var(--border)" }} />
-                </div>
-
-                <button style={{ width: "100%", background: "transparent", border: "1px solid var(--border)", borderRadius: 9, padding: "9px", fontSize: 12, color: "var(--blue)", cursor: "pointer", fontFamily: "Sora,sans-serif", fontWeight: 700 }} onClick={demo}>
-                    Auto-fill Demo Credentials →
-                </button>
-
-                <div style={{ marginTop: 14, background: "rgba(37,99,235,.05)", border: "1px solid rgba(37,99,235,.13)", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "var(--muted)" }}>
-                    <strong style={{ color: "var(--blue)" }}>Demo:</strong> username: <code>r_mishra</code> · password: <code>faculty@2025</code>
-                </div>
 
                 <div style={{ marginTop: 18, textAlign: "center", fontSize: 12, color: "var(--muted)" }}>
                     <span style={{ color: "var(--blue)", fontWeight: 600, cursor: "pointer" }}>Forgot Password?</span>

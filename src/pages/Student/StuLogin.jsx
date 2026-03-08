@@ -20,8 +20,6 @@ export function StuLogin() {
         // On success, AuthContext.loginUser() auto-navigates based on role
     };
 
-    const demo = () => setF({ username: "aditya_sharma", pass: "sage@2025" });
-
     const handleKeyDown = (e) => { if (e.key === 'Enter') go(); };
 
     return (
@@ -82,15 +80,6 @@ export function StuLogin() {
                         {loading ? <><span style={{ animation: "spin .7s linear infinite", display: "inline-block", marginRight: 7 }}>⟳</span>Signing in…</> : "Sign In to Portal →"}
                     </button>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "18px 0", fontSize: 12, color: "var(--muted2)" }}>
-                        <div style={{ flex: 1, height: 1, background: "var(--border)" }} />or try demo<div style={{ flex: 1, height: 1, background: "var(--border)" }} />
-                    </div>
-
-                    <div style={{ background: "rgba(37,99,235,.05)", border: "1px solid rgba(37,99,235,.14)", borderRadius: 9, padding: "13px 15px", fontSize: 12, color: "var(--muted)" }}>
-                        <strong style={{ color: "var(--blue)" }}>Demo Account</strong><br />
-                        Username: aditya_sharma &nbsp;·&nbsp; Password: sage@2025<br />
-                        <button style={{ marginTop: 9, background: "transparent", border: "1px solid rgba(37,99,235,.3)", borderRadius: 6, padding: "5px 12px", fontSize: 11, color: "var(--blue)", cursor: "pointer", fontFamily: "Sora,sans-serif", fontWeight: 700 }} onClick={demo}>Auto-fill Demo →</button>
-                    </div>
 
                     <div style={{ marginTop: 20, textAlign: "center", fontSize: 12, color: "var(--muted)" }}>
                         Are you faculty? <span style={{ color: "var(--blue)", fontWeight: 700, cursor: "pointer" }} onClick={() => navigate("/faculty-login")}>Faculty Login →</span>
