@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User, School, Student, Faculty, Subject, Enrollment, Material, Assignment, Submission, Query
+from .models import User, School, Student, Faculty, Subject, Enrollment, Material
 
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,27 +51,6 @@ class MaterialSerializer(serializers.ModelSerializer):
         model = Material
         fields = '__all__'
 
-class AssignmentSerializer(serializers.ModelSerializer):
-    subject_code = serializers.CharField(source='subject.code', read_only=True)
-
-    class Meta:
-        model = Assignment
-        fields = '__all__'
-
-class SubmissionSerializer(serializers.ModelSerializer):
-    assignment = AssignmentSerializer(read_only=True)
-
-    class Meta:
-        model = Submission
-        fields = '__all__'
-
-class QuerySerializer(serializers.ModelSerializer):
-    student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
-    subject_code = serializers.CharField(source='subject.code', read_only=True)
-
-    class Meta:
-        model = Query
-        fields = '__all__'
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

@@ -71,7 +71,7 @@ import dj_database_url
 
 # ─── Database ────────────────────────────────────────────────────────────────────
 DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('MYSQL_URL')
-if DATABASE_URL:
+if DATABASE_URL and 'sqlite' not in DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
     }

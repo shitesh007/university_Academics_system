@@ -3,11 +3,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsFaculty
-from .models import School, Student, Faculty, Subject, Enrollment, Material, Assignment, Submission, Query
+from .models import School, Student, Faculty, Subject, Enrollment, Material
 from .serializers import (
     SchoolSerializer, StudentSerializer, FacultySerializer, SubjectSerializer, 
-    EnrollmentSerializer, MaterialSerializer, AssignmentSerializer, 
-    SubmissionSerializer, QuerySerializer, CustomTokenObtainPairSerializer
+    EnrollmentSerializer, MaterialSerializer, CustomTokenObtainPairSerializer
 )
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -76,20 +75,4 @@ class MaterialViewSet(viewsets.ModelViewSet):
         # Proceed with normal creation
         return super().create(request, *args, **kwargs)
 
-class AssignmentViewSet(viewsets.ModelViewSet):
-    queryset = Assignment.objects.all()
-    serializer_class = AssignmentSerializer
 
-class SubmissionViewSet(viewsets.ModelViewSet):
-    queryset = Submission.objects.all()
-    serializer_class = SubmissionSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        if getattr(user, 'role', None) == 'student':
-            return Submission.objects.filter(student__user=user)
-        return Submission.objects.all()
-
-class QueryViewSet(viewsets.ModelViewSet):
-    queryset = Query.objects.all()
-    serializer_class = QuerySerializer

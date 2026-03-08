@@ -1,19 +1,17 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { NotifDrop } from '../../components/NotifDrop';
-import { FacOverview, FacUpload, FacSubjects, FacQueries, FacAnnounce, FacProfile } from './FacDashPages';
+import { FacOverview, FacUpload, FacSubjects, FacProfile } from './FacDashPages';
 
 const FAC_NAV = [
     { id: "overview", ico: "📊", lbl: "Dashboard" },
     { id: "upload", ico: "📤", lbl: "Upload Material" },
     { id: "subjects", ico: "📚", lbl: "My Subjects" },
-    { id: "queries", ico: "💬", lbl: "Student Queries", badge: 3, bg: true },
-    { id: "announce", ico: "📢", lbl: "Announcements" },
     { id: "profile", ico: "👤", lbl: "My Profile" }
 ];
 
 const FAC_TITLES = {
-    overview: "Faculty Dashboard", upload: "Upload Material", subjects: "Manage Subjects", queries: "Student Queries", announce: "Announcements", profile: "Faculty Profile"
+    overview: "Faculty Dashboard", upload: "Upload Material", subjects: "Manage Subjects", profile: "Faculty Profile"
 };
 
 export function FacDash({ dark, toggleDark }) {
@@ -23,8 +21,10 @@ export function FacDash({ dark, toggleDark }) {
     const [nd, setNd] = useState(false);
 
     const P = {
-        overview: <FacOverview setPage={setPage} />, upload: <FacUpload />, subjects: <FacSubjects />,
-        queries: <FacQueries />, announce: <FacAnnounce />, profile: <FacProfile />
+        overview: <FacOverview setPage={setPage} user={user} />,
+        upload: <FacUpload user={user} />,
+        subjects: <FacSubjects user={user} />,
+        profile: <FacProfile user={user} />
     };
 
     return (
@@ -38,10 +38,10 @@ export function FacDash({ dark, toggleDark }) {
                     </div>
                 </div>
                 <div className="sb-profile">
-                    <div className="sb-avatar f-avatar">DR</div>
+                    <div className="sb-avatar f-avatar">{user?.name ? user.name.charAt(0).toUpperCase() : "F"}</div>
                     <div>
-                        <div className="sb-name">{user?.name || "Faculty Member"}</div>
-                        <div className="sb-roll" style={{ color: "var(--gold-lt)" }}>Faculty</div>
+                        <div className="sb-name">{user?.name || "Loading..."}</div>
+                        <div className="sb-roll" style={{ color: "var(--gold-lt)", fontSize: 11, marginTop: 2 }}>{user?.username || "Faculty"}</div>
                         <div className="sb-online">Online</div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ export function FacDash({ dark, toggleDark }) {
                             <button className="ico-btn" onClick={() => setNd(p => !p)}>🔔<div className="notif-dot" style={{ background: "var(--gold)" }} /></button>
                             {nd && <NotifDrop onClose={() => setNd(false)} />}
                         </div>
-                        <div className="sb-avatar f-avatar" style={{ width: 34, height: 34, borderRadius: 9, fontSize: 13 }}>DR</div>
+                        <div className="sb-avatar f-avatar" style={{ width: 34, height: 34, borderRadius: 9, fontSize: 13 }}>{user?.name ? user.name.charAt(0).toUpperCase() : "F"}</div>
                     </div>
                 </div>
                 <div className="content">{P[page] || P.overview}</div>

@@ -401,6 +401,30 @@ class Command(BaseCommand):
             )
             self.stdout.write(f'     🎓 Student: {student}')
 
+            # Generate additional 38 students per school to reach exactly 120 users total
+            additional_students = []
+            for i in range(1, 39):
+                extra_username = f"student_{school_data['code'].lower()}_{i:03d}"
+                stu_u = User.objects.create_user(
+                    username=extra_username,
+                    email=f"{extra_username}@sageuniversity.edu.in",
+                    password="sage@2025",
+                    first_name=f"Student{i}",
+                    last_name=school_data["code"],
+                    role="student",
+                )
+                extra_student = Student(
+                    user=stu_u,
+                    roll_number=f"{school_data['code']}/BTEC/2022/{800+i:04d}",
+                    semester=sd["semester"],
+                    branch=sd["branch"],
+                    school=school,
+                    cgpa=round(6.0 + (i % 30) * 0.1, 1),
+                )
+                additional_students.append(extra_student)
+            Student.objects.bulk_create(additional_students)
+            self.stdout.write(f'     🎓 Created 38 extra mock students for {school_data["name"]}')
+
             # Create Subjects, Materials, Enrollments for all 8 semesters
             materials_to_create = []
             for sem_num, subjects_list in school_data["semesters"].items():

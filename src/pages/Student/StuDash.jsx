@@ -2,25 +2,18 @@ import React, { useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { NotifDrop } from '../../components/NotifDrop';
-import { STUDENT_DATA } from '../../data/mockData';
-import { StuOverview, StuActivity, StuSubjects, StuMaterials, StuAssignments, StuExams, StuPerf, StuRec, StuProfile } from './StuDashPages';
+import { StuOverview, StuSubjects, StuMaterials, StuProfile } from './StuDashPages';
 
 const STU_NAV = [
     { id: "overview", ico: "🏠", lbl: "Dashboard" },
-    { id: "activity", ico: "📈", lbl: "My Activity" },
     { id: "subjects", ico: "📚", lbl: "My Subjects" },
     { id: "materials", ico: "📂", lbl: "Study Materials" },
-    { id: "assignments", ico: "📝", lbl: "Assignments", badge: 2 },
-    { id: "exams", ico: "📅", lbl: "Upcoming Exams" },
-    { id: "performance", ico: "📊", lbl: "Performance" },
-    { id: "rec", ico: "💡", lbl: "Recommendations", badge: "New", bg: true },
     { id: "profile", ico: "👤", lbl: "My Profile" },
 ];
 
 const STU_TITLES = {
-    overview: "Dashboard Overview", activity: "My Activity", subjects: "My Subjects",
-    materials: "Study Materials", assignments: "Assignments", exams: "Upcoming Exams",
-    performance: "Performance Analytics", rec: "Recommendations", profile: "My Profile"
+    overview: "Dashboard Overview", subjects: "My Subjects",
+    materials: "Study Materials", profile: "My Profile"
 };
 
 export function StuDash({ dark, toggleDark }) {
@@ -31,15 +24,10 @@ export function StuDash({ dark, toggleDark }) {
     const [nd, setNd] = useState(false);
 
     const P = {
-        overview: <StuOverview setPage={setPage} />,
-        activity: <StuActivity />,
-        subjects: <StuSubjects />,
-        materials: <StuMaterials />,
-        assignments: <StuAssignments />,
-        exams: <StuExams />,
-        performance: <StuPerf />,
-        rec: <StuRec />,
-        profile: <StuProfile />
+        overview: <StuOverview setPage={setPage} user={user} />,
+        subjects: <StuSubjects user={user} />,
+        materials: <StuMaterials user={user} />,
+        profile: <StuProfile user={user} />
     };
 
     return (
@@ -56,8 +44,8 @@ export function StuDash({ dark, toggleDark }) {
                 <div className="sb-profile">
                     <div className="sb-avatar">{user?.name ? user.name.charAt(0).toUpperCase() : "S"}</div>
                     <div>
-                        <div className="sb-name">{user?.name || "Student User"}</div>
-                        <div className="sb-roll">{user?.username || "SAGE-XX"}</div>
+                        <div className="sb-name">{user?.name || "Loading..."}</div>
+                        <div className="sb-roll">{user?.username || "Loading..."}</div>
                         <div className="sb-online">Online</div>
                     </div>
                 </div>
@@ -81,7 +69,7 @@ export function StuDash({ dark, toggleDark }) {
                 <div className="topbar">
                     <div className="tb-left">
                         <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 19 }} onClick={() => setSbOpen(p => !p)}>☰</button>
-                        <div><div className="tb-title">{STU_TITLES[page]}</div><div className="tb-sub">Semester {user?.semester || 1} · {user?.school_name || STUDENT_DATA.branch}</div></div>
+                        <div><div className="tb-title">{STU_TITLES[page]}</div><div className="tb-sub">Semester {user?.semester || 1} · {user?.school_name || "Academic Program"}</div></div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                         <div className="searchbar" style={{ display: "flex" }}><span style={{ fontSize: 13, opacity: .5 }}>🔍</span><input placeholder="Search…" style={{ width: 140 }} /></div>
