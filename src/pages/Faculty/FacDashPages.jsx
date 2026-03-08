@@ -3,6 +3,27 @@ import { api } from '../../services/api';
 import toast from 'react-hot-toast';
 
 export function FacOverview({ setPage, user }) {
+    const [stats, setStats] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        Promise.all([api.getMaterials(), api.getSubjects()])
+            .then(([mats, subs]) => {
+                const semCounts = {};
+                mats.forEach(m => {
+                    const sub = subs.find(s => s.code === m.subject_code);
+                    const sem = sub ? sub.semester : "Unknown";
+                    const label = `Semester ${sem}`;
+                    semCounts[label] = (semCounts[label] || 0) + 1;
+                });
+                setStats(semCounts);
+                setLoading(false);
+            }).catch(err => {
+                console.error(err);
+                setLoading(false);
+            });
+    }, []);
+
     return (
         <div className="fi">
             <div style={{ fontFamily: "Lora,serif", fontWeight: 700, fontSize: 22, color: "var(--navy)", marginBottom: 3 }}>
@@ -27,12 +48,34 @@ export function FacOverview({ setPage, user }) {
                 ))}
             </div>
 
-            <div className="card cp">
-                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    <span style={{ fontSize: 24 }}>🎓</span>
-                    <div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: "var(--navy)" }}>{user?.school_name || "Assigned Department"}</div>
-                        <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 2 }}>You are currently viewing data isolated to your specific school constraints.</div>
+            <div style={{ display: "flex", gap: 20, alignItems: "start", flexWrap: "wrap" }}>
+                <div className="card cp" style={{ flex: 1, minWidth: 300 }}>
+                    <div className="ct">📈 Upload Activity</div>
+                    {loading ? <div style={{ padding: 20, color: "var(--muted)" }}>Loading metrics...</div> : (
+                        Object.keys(stats).length === 0 ? (
+                            <div style={{ padding: 20, color: "var(--muted)" }}>No uploads found. Start uploading materials to see your activity.</div>
+                        ) : (
+                            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                                {Object.keys(stats).sort().map(sem => (
+                                    <div key={sem} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", background: "rgba(37,99,235,.04)", borderRadius: 8, border: "1px solid rgba(37,99,235,.1)" }}>
+                                        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--navy)" }}>{sem}</div>
+                                        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--blue)", background: "#fff", padding: "4px 12px", borderRadius: 20, boxShadow: "0 2px 5px rgba(0,0,0,.05)" }}>
+                                            {stats[sem]} Materials
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    )}
+                </div>
+
+                <div className="card cp" style={{ flex: 1, minWidth: 300 }}>
+                    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                        <span style={{ fontSize: 24 }}>🎓</span>
+                        <div>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--navy)" }}>{user?.school_name || "Assigned Department"}</div>
+                            <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 2 }}>You are currently viewing data isolated to your specific school constraints.</div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -37,46 +37,69 @@ export function StuOverview({ setPage, user }) {
 
 export function StuSubjects({ user }) {
     const [subs, setSubs] = useState([]);
+    const [mats, setMats] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [expanded, setExpanded] = useState(null);
 
     useEffect(() => {
-        api.getEnrollments().then(res => {
-            setSubs(res);
-            setLoading(false);
-        }).catch(err => {
-            console.error(err);
-            setLoading(false);
-        });
+        Promise.all([api.getEnrollments(), api.getMaterials()])
+            .then(([rSubs, rMats]) => {
+                setSubs(rSubs);
+                setMats(rMats);
+                setLoading(false);
+            }).catch(err => {
+                console.error(err);
+                setLoading(false);
+            });
     }, []);
 
     if (loading) return <div className="fi" style={{ padding: 40, textAlign: 'center' }}>Loading Subjects...</div>;
 
     return (
-        <div className="fi g2" style={{ alignItems: "start" }}>
+        <div className="fi">
             <div className="card cp">
                 <div className="ct">📚 My Academic Subjects</div>
-                {subs.map((e, i) => (
-                    <div className="sr" key={i}>
-                        <span style={{ fontSize: 21 }}>💻</span>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.subject?.name}</div>
-                            <div style={{ fontSize: 11, color: "var(--muted)" }}>{e.subject?.code}</div>
-                        </div>
-                    </div>
-                ))}
-                {subs.length === 0 && <div style={{ padding: 10, color: 'var(--muted)' }}>No subjects enrolled for this semester yet.</div>}
-            </div>
+                <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 15 }}>Click on any subject below to view its study materials and notes unit-wise.</div>
 
-            <div>
-                <div className="card cp" style={{ marginBottom: 18 }}>
-                    <div className="ct">🕐 Estimated Attendance</div>
-                    <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
-                        <AttRing pct={78} color="#2563EB" />
-                        <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 13, color: "var(--navy)", fontWeight: 600 }}>Looking Good!</div>
-                            <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>You are maintaining above the 75% criteria. Keep attending regular classes.</div>
-                        </div>
-                    </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    {subs.map((e, i) => {
+                        const subjMats = mats.filter(m => m.subject_code === e.subject.code);
+                        const isExp = expanded === e.subject.code;
+
+                        return (
+                            <div key={i} style={{ display: "flex", flexDirection: "column", padding: 15, cursor: "pointer", transition: "all .2s ease", border: isExp ? "1px solid var(--blue)" : "1px solid var(--border)", borderRadius: 10, background: isExp ? "rgba(37,99,235,.02)" : "var(--surface)" }} onClick={() => setExpanded(isExp ? null : e.subject.code)}>
+                                <div style={{ display: "flex", gap: 15, alignItems: "center" }}>
+                                    <div style={{ width: 40, height: 40, borderRadius: 8, background: "rgba(37,99,235,.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>📘</div>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.subject?.name}</div>
+                                        <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>{e.subject?.code} · {subjMats.length} Learning Resources</div>
+                                    </div>
+                                    <div style={{ fontSize: 18, color: "var(--muted)", transform: isExp ? "rotate(180deg)" : "none", transition: "transform .3s ease" }}>
+                                        ▾
+                                    </div>
+                                </div>
+
+                                {isExp && (
+                                    <div style={{ marginTop: 15, paddingTop: 15, borderTop: "1px dashed var(--border)", display: "flex", flexDirection: "column", gap: 8 }} onClick={e => e.stopPropagation()}>
+                                        {subjMats.length === 0 ? <div style={{ fontSize: 12, color: "var(--muted)", textAlign: "center", padding: "10px" }}>No materials have been provided for this subject yet.</div> :
+                                            subjMats.map(m => (
+                                                <div key={m.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fff", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(0,0,0,.05)" }}>
+                                                    <div style={{ flex: 1, minWidth: 0, marginRight: 10 }}>
+                                                        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.title}</div>
+                                                        <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 3 }}>
+                                                            <span style={{ background: "rgba(37,99,235,.1)", color: "var(--blue)", padding: "2px 6px", borderRadius: 4, marginRight: 6 }}>{m.category === 'pyq' ? 'PYQ' : (m.category === 'ebook' ? 'E-Book' : 'Notes')}</span>
+                                                            {m.size_mb} MB · Uploaded by {m.uploaded_by_name}
+                                                        </div>
+                                                    </div>
+                                                    <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 14px", whiteSpace: "nowrap" }} onClick={() => window.open(m.file_url, "_blank")}>⬇ Download</button>
+                                                </div>
+                                            ))}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                    {subs.length === 0 && <div style={{ padding: 20, textAlign: "center", color: 'var(--muted)' }}>No subjects enrolled for this semester yet.</div>}
                 </div>
             </div>
         </div>
