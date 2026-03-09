@@ -91,7 +91,7 @@ export function StuSubjects({ user }) {
                                                             {m.size_mb} MB · Uploaded by {m.uploaded_by_name}
                                                         </div>
                                                     </div>
-                                                    <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 14px", whiteSpace: "nowrap" }} onClick={() => window.open(m.file_url, "_blank")}>⬇ Download</button>
+                                                    <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 14px", whiteSpace: "nowrap" }} onClick={() => window.open(m.file_url.startsWith('http') ? m.file_url : `${import.meta.env.VITE_API_URL}${m.file_url}`, "_blank")}>⬇ Download</button>
                                                 </div>
                                             ))}
                                     </div>
@@ -155,7 +155,7 @@ export function StuMaterials({ user }) {
                             <div className="mat-name">{f.title} <span style={{ fontSize: 11, color: "var(--muted)", fontWeight: "normal" }}>({f.subject_code})</span></div>
                             <div className="mat-meta">{f.size_mb} MB · Uploaded {new Date(f.upload_date).toLocaleDateString()} · By {f.uploaded_by_name}</div>
                         </div>
-                        <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "7px 14px" }} onClick={() => window.open(f.file_url, "_blank")}>⬇ Download</button>
+                        <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "7px 14px" }} onClick={() => window.open(f.file_url.startsWith('http') ? f.file_url : `${import.meta.env.VITE_API_URL}${f.file_url}`, "_blank")}>⬇ Download</button>
                     </div>
                 ))}
             </div>

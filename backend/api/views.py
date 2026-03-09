@@ -1,13 +1,25 @@
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from rest_framework import viewsets, permissions, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import IsAuthenticated
-from .permissions import IsFaculty
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import School, Student, Faculty, Subject, Enrollment, Material
 from .serializers import (
     SchoolSerializer, StudentSerializer, FacultySerializer, SubjectSerializer, 
     EnrollmentSerializer, MaterialSerializer, CustomTokenObtainPairSerializer
 )
+import datetime
+
+try:
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib.units import inch
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+except ImportError:
+    pass
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -74,5 +86,62 @@ class MaterialViewSet(viewsets.ModelViewSet):
 
         # Proceed with normal creation
         return super().create(request, *args, **kwargs)
+
+
+class DownloadMaterialView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request, pk):
+        material = get_object_or_404(Material, pk=pk)
+        
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="{material.subject.code}_{material.category}.pdf"'
+        
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        styles = getSampleStyleSheet()
+        Story = []
+        
+        Story.append(Paragraph(f"SAGE University Study Material", styles["Title"]))
+        Story.append(Spacer(1, 0.2 * inch))
+        Story.append(Paragraph(f"<b>Title:</b> {material.title}", styles["Heading2"]))
+        Story.append(Paragraph(f"<b>Subject:</b> {material.subject.name} ({material.subject.code})", styles["Heading3"]))
+        Story.append(Paragraph(f"<b>Category:</b> {material.get_category_display()}", styles["Normal"]))
+        Story.append(Paragraph(f"<b>Faculty:</b> Dr. {material.uploaded_by.user.last_name} ({material.uploaded_by.department})", styles["Normal"]))
+        Story.append(Paragraph(f"<b>Date:</b> {material.upload_date.strftime('%B %d, %Y')}", styles["Normal"]))
+        Story.append(Spacer(1, 0.5 * inch))
+        
+        # Original Content Generation
+        content_text = f"This document contains the official study material for {material.subject.name}. " \
+                       f"The concepts covered in this {material.get_category_display().lower()} are essential for " \
+                       f"mastering the coursework in Semester {material.subject.semester}. Students are advised to " \
+                       f"review this content thoroughly and consult Dr. {material.uploaded_by.user.last_name} for any clarifications. "
+                       
+        if material.category == 'notes':
+            content_text += "These notes summarize the core units and foundational theories necessary for your upcoming end-semester examinations."
+        elif material.category == 'pyq':
+            content_text += "Attached are the previous year questions (PYQs). Practicing these will give you a clear understanding of the exam pattern."
+        elif material.category == 'important':
+            content_text += "These are the highly anticipated and important topics highlighted by the faculty. Focus heavily on these areas."
+        elif material.category == 'tutorial':
+            content_text += "This outlines the key takeaways from the video tutorial series corresponding to this subject."
+        else:
+            content_text += "This reference material is highly recommended for building a strong foundational context."
+            
+        Story.append(Paragraph(content_text, styles["Normal"]))
+        Story.append(Spacer(1, 0.3 * inch))
+        
+        # Add the description from the material itself
+        Story.append(Paragraph("Description / Remarks:", styles["Heading4"]))
+        for line in material.description.split('\n'):
+            Story.append(Paragraph(line, styles["Normal"]))
+            
+        # Add some dummy theoretical text based on the subject length
+        Story.append(Spacer(1, 0.5 * inch))
+        Story.append(Paragraph("Course Outline & Detailed Core Concepts:", styles["Heading3"]))
+        long_text = f"The study of {material.subject.name} requires a dedicated approach integrating both theoretical frameworks and practical applications. Throughout this semester, students are expected to engage deeply with the primary texts, evaluate critically the established literature, and synthesize findings to address modern analytical challenges within the field of {material.subject.school.name}."
+        Story.append(Paragraph(long_text, styles["Normal"]))
+            
+        doc.build(Story)
+        return response
 
 

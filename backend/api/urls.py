@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     StudentViewSet, FacultyViewSet, SubjectViewSet, 
-    EnrollmentViewSet, MaterialViewSet, CustomTokenObtainPairView
+    EnrollmentViewSet, MaterialViewSet, CustomTokenObtainPairView,
+    DownloadMaterialView
 )
 
 router = DefaultRouter()
@@ -17,5 +18,6 @@ router.register(r'materials', MaterialViewSet, basename='material')
 urlpatterns = [
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('materials/<int:pk>/download/', DownloadMaterialView.as_view(), name='material-download'),
     path('', include(router.urls)),
 ]

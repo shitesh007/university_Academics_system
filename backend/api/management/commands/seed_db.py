@@ -272,7 +272,7 @@ def make_materials(subject, faculty, sem):
             title=f"{sname} — Complete Unit Notes (Sem {sem})",
             description=f"Comprehensive notes covering all 5 units:\n" + "\n".join(f"• {u}" for u in units),
             category="notes",
-            file_url=f"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            file_url="", # Will be updated after inserting
             size_mb=round(2.4 + sem * 0.3, 1),
         ),
         Material(
@@ -288,7 +288,7 @@ def make_materials(subject, faculty, sem):
                 f"• 2019: Unit-wise practice sets"
             ),
             category="pyq",
-            file_url=f"https://unec.edu.az/application/uploads/2014/12/pdf-sample.pdf",
+            file_url="",
             size_mb=round(1.8 + sem * 0.2, 1),
         ),
         Material(
@@ -304,7 +304,7 @@ def make_materials(subject, faculty, sem):
                 f"• Formula sheet and quick reference card for {sname}"
             ),
             category="important",
-            file_url=f"https://africau.edu/images/default/sample.pdf",
+            file_url="",
             size_mb=round(0.9 + sem * 0.1, 1),
         ),
         Material(
@@ -320,7 +320,7 @@ def make_materials(subject, faculty, sem):
                 f"• Playlist hosted on YouTube"
             ),
             category="tutorial",
-            file_url=f"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            file_url="",
             size_mb=round(420.0 + sem * 30, 1),
         ),
         Material(
@@ -336,7 +336,7 @@ def make_materials(subject, faculty, sem):
                 f"• Format: PDF — optimized for mobile reading"
             ),
             category="ebook",
-            file_url=f"https://pronto-core-share.s3-us-west-2.amazonaws.com/24e68da7-1d68-45a8-9d48-3b10b7a86377.pdf",
+            file_url="",
             size_mb=round(8.5 + sem * 1.2, 1),
         ),
     ]
@@ -447,7 +447,15 @@ class Command(BaseCommand):
                     materials_to_create.extend(make_materials(subject, faculty, sem_num))
 
             Material.objects.bulk_create(materials_to_create)
-            self.stdout.write(f'     📚 {len(materials_to_create)} materials created across 8 semesters')
+            
+            # Post-process: assign dynamic download PDF link since MySQL bulk_create doesn't return IDs
+            all_created_materials = Material.objects.filter(subject__school=school)
+            for mat in all_created_materials:
+                if mat.file_url == "":
+                    mat.file_url = f"/api/materials/{mat.id}/download/"
+            Material.objects.bulk_update(all_created_materials, ['file_url'])
+            
+            self.stdout.write(f'     📚 {len(materials_to_create)} materials created across 8 semesters and assigned dynamic PDF URLs')
 
         self.stdout.write(self.style.SUCCESS('\n✅ Database seeded successfully!'))
         self.stdout.write(f'   Schools: {School.objects.count()}')
