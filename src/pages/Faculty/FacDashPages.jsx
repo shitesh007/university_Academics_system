@@ -165,7 +165,7 @@ export function FacUpload({ user }) {
 
     if (loading) return <div className="fi" style={{ padding: 40, textAlign: 'center' }}>Loading...</div>;
 
-    const catMap = { 'notes': 'Notes', 'pyq': 'PYQs', 'ebook': 'E-book', 'video': 'Video', 'topic': 'Topic' };
+    const catMap = { 'notes': 'Notes', 'pyq': 'PYQs', 'important': 'Important Topics', 'tutorial': 'Tutorials', 'ebook': 'E-book', 'video': 'Video', 'topic': 'Topic' };
 
     return (
         <div className="fi g2" style={{ alignItems: "start" }}>
@@ -206,6 +206,8 @@ export function FacUpload({ user }) {
                             <select className="inp" value={category} onChange={e => setCategory(e.target.value)} required style={{ background: "var(--surface)" }}>
                                 <option value="notes">Notes & Slides</option>
                                 <option value="pyq">Previous Year Papers</option>
+                                <option value="important">Important Topics</option>
+                                <option value="tutorial">Tutorials & Videos</option>
                                 <option value="ebook">Reference E-Book</option>
                             </select>
                         </div>
@@ -240,7 +242,7 @@ export function FacUpload({ user }) {
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     {materials.map(m => (
                         <div key={m.id} style={{ padding: "12px", border: "1px solid var(--border)", borderRadius: "8px", display: "flex", alignItems: "center", gap: 12 }}>
-                            <div style={{ fontSize: 24 }}>{m.category === 'pyq' ? '📄' : (m.category === 'ebook' ? '📗' : '📓')}</div>
+                            <div style={{ fontSize: 24 }}>{m.category === 'pyq' ? '📄' : (m.category === 'ebook' ? '📗' : (m.category === 'tutorial' ? '▶️' : (m.category === 'important' ? '⭐' : '📓')))}</div>
                             <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--navy)" }}>{m.title}</div>
                                 <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 3 }}>

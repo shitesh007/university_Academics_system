@@ -87,7 +87,7 @@ export function StuSubjects({ user }) {
                                                     <div style={{ flex: 1, minWidth: 0, marginRight: 10 }}>
                                                         <div style={{ fontSize: 13, fontWeight: 600, color: "var(--navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.title}</div>
                                                         <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 3 }}>
-                                                            <span style={{ background: "rgba(37,99,235,.1)", color: "var(--blue)", padding: "2px 6px", borderRadius: 4, marginRight: 6 }}>{m.category === 'pyq' ? 'PYQ' : (m.category === 'ebook' ? 'E-Book' : 'Notes')}</span>
+                                                            <span style={{ background: "rgba(37,99,235,.1)", color: "var(--blue)", padding: "2px 6px", borderRadius: 4, marginRight: 6 }}>{m.category === 'pyq' ? 'PYQ' : (m.category === 'ebook' ? 'E-Book' : (m.category === 'tutorial' ? 'Video' : (m.category === 'important' ? 'Important' : 'Notes')))}</span>
                                                             {m.size_mb} MB · Uploaded by {m.uploaded_by_name}
                                                         </div>
                                                     </div>
@@ -122,15 +122,17 @@ export function StuMaterials({ user }) {
         });
     }, []);
 
-    const TABS = ["Notes", "PYQs", "E-books"];
+    const TABS = ["Notes", "PYQs", "E-books", "Important Topics", "Tutorials"];
     // Map backend categories to our UI tabs
     const catMap = {
         'notes': 'Notes',
         'pyq': 'PYQs',
+        'important': 'Important Topics',
+        'tutorial': 'Tutorials',
         'ebook': 'E-books',
         // Fallbacks in case old seeds still use these
-        'video': 'Notes',
-        'topic': 'Notes'
+        'video': 'Tutorials',
+        'topic': 'Important Topics'
     };
 
     const files = materials.filter(m => catMap[m.category] === tab);
@@ -147,7 +149,7 @@ export function StuMaterials({ user }) {
                 {files.map((f, i) => (
                     <div className="mat-row" key={i}>
                         <div className="mat-icon" style={{ background: "rgba(37,99,235,.1)" }}>
-                            {f.category === 'pyq' ? '📄' : (f.category === 'ebook' ? '📗' : '📓')}
+                            {f.category === 'pyq' ? '📄' : (f.category === 'ebook' ? '📗' : (f.category === 'tutorial' ? '▶️' : (f.category === 'important' ? '⭐' : '📓')))}
                         </div>
                         <div style={{ flex: 1 }}>
                             <div className="mat-name">{f.title} <span style={{ fontSize: 11, color: "var(--muted)", fontWeight: "normal" }}>({f.subject_code})</span></div>
