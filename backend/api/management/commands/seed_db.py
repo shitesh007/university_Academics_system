@@ -1,7 +1,7 @@
 import datetime
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from api.models import User, School, Student, Faculty, Subject, Enrollment, Material, Assignment, Submission, Query
+from api.models import User, School, Student, Faculty, Subject, Enrollment, Material
 
 
 # ─── School Curriculum Data ───────────────────────────────────────────────────
@@ -272,7 +272,7 @@ def make_materials(subject, faculty, sem):
             title=f"{sname} — Complete Unit Notes (Sem {sem})",
             description=f"Comprehensive notes covering all 5 units:\n" + "\n".join(f"• {u}" for u in units),
             category="notes",
-            file_url=f"https://sage-docs.example.com/{scode}/unit-notes-sem{sem}.pdf",
+            file_url=f"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
             size_mb=round(2.4 + sem * 0.3, 1),
         ),
         Material(
@@ -288,7 +288,7 @@ def make_materials(subject, faculty, sem):
                 f"• 2019: Unit-wise practice sets"
             ),
             category="pyq",
-            file_url=f"https://sage-docs.example.com/{scode}/pyq-2019-2023.pdf",
+            file_url=f"https://unec.edu.az/application/uploads/2014/12/pdf-sample.pdf",
             size_mb=round(1.8 + sem * 0.2, 1),
         ),
         Material(
@@ -304,7 +304,7 @@ def make_materials(subject, faculty, sem):
                 f"• Formula sheet and quick reference card for {sname}"
             ),
             category="important",
-            file_url=f"https://sage-docs.example.com/{scode}/imp-questions-sem{sem}.pdf",
+            file_url=f"https://africau.edu/images/default/sample.pdf",
             size_mb=round(0.9 + sem * 0.1, 1),
         ),
         Material(
@@ -317,10 +317,10 @@ def make_materials(subject, faculty, sem):
                 f"• Lecture 6–10: Intermediate concepts with examples\n"
                 f"• Lecture 11–14: Advanced problems & numerical solving\n"
                 f"• Lecture 15: Full revision + doubt clearing session\n"
-                f"• Playlist hosted on SAGE Learning Portal"
+                f"• Playlist hosted on YouTube"
             ),
             category="tutorial",
-            file_url=f"https://sage-docs.example.com/{scode}/video-playlist-sem{sem}.m3u8",
+            file_url=f"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             size_mb=round(420.0 + sem * 30, 1),
         ),
         Material(
@@ -336,7 +336,7 @@ def make_materials(subject, faculty, sem):
                 f"• Format: PDF — optimized for mobile reading"
             ),
             category="ebook",
-            file_url=f"https://sage-docs.example.com/{scode}/reference-ebook-sem{sem}.pdf",
+            file_url=f"https://pronto-core-share.s3-us-west-2.amazonaws.com/24e68da7-1d68-45a8-9d48-3b10b7a86377.pdf",
             size_mb=round(8.5 + sem * 1.2, 1),
         ),
     ]
