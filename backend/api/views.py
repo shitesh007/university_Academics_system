@@ -87,6 +87,9 @@ class MaterialViewSet(viewsets.ModelViewSet):
         # Proceed with normal creation
         return super().create(request, *args, **kwargs)
 
+    def perform_create(self, serializer):
+        serializer.save(uploaded_by=self.request.user.faculty)
+
 
 class DownloadMaterialView(APIView):
     permission_classes = [AllowAny]
