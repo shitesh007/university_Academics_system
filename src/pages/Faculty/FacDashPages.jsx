@@ -93,7 +93,7 @@ export function FacUpload({ user }) {
     const [subjectId, setSubjectId] = useState("");
     const [category, setCategory] = useState("notes");
     const [title, setTitle] = useState("");
-    const [fileUrl, setFileUrl] = useState("");
+    const [file, setFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
 
     const fetchDashboardData = async () => {
@@ -130,23 +130,24 @@ export function FacUpload({ user }) {
     const handleUpload = async (e) => {
         e.preventDefault();
         if (!subjectId) return toast.error("Please select a subject.");
+        if (!file) return toast.error("Please explicitly select a file to upload.");
 
         setIsUploading(true);
         try {
-            await api.uploadMaterial({
-                subject: subjectId,
-                title,
-                category,
-                file_url: fileUrl,
-                size_mb: (Math.random() * 5 + 1).toFixed(2), // Mock size since we take URLs
-                description: "Uploaded via Faculty Dashboard"
-            });
+            const formData = new FormData();
+            formData.append("subject", subjectId);
+            formData.append("title", title);
+            formData.append("category", category);
+            formData.append("description", "Uploaded via Faculty Dashboard");
+            formData.append("file", file);
+
+            await api.uploadFileMaterial(formData);
             toast.success("Material uploaded successfully!");
             setTitle("");
-            setFileUrl("");
+            setFile(null);
             fetchDashboardData();
         } catch (err) {
-            toast.error("Upload failed. Ensure URL is valid.");
+            toast.error("Upload failed. Ensure the file is supported.");
         } finally {
             setIsUploading(false);
         }
@@ -224,11 +225,11 @@ export function FacUpload({ user }) {
                         <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 8 }}>
                             <span style={{ fontSize: 20 }}>🔗</span>
                             <div>
-                                <label className="lbl" style={{ margin: 0, color: "var(--navy)", fontSize: 13, fontWeight: 600 }}>Resource Link / File URL</label>
-                                <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>Accepts links from Google Drive, OneDrive, DropBox, or any direct file URL.</div>
+                                <label className="lbl" style={{ margin: 0, color: "var(--navy)", fontSize: 13, fontWeight: 600 }}>Upload Document</label>
+                                <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>Select a PDF or Document from your computer.</div>
                             </div>
                         </div>
-                        <input className="inp" type="url" placeholder="Paste your link here (https://...)" value={fileUrl} onChange={e => setFileUrl(e.target.value)} required style={{ background: "#fff", borderColor: "rgba(37,99,235,.2)" }} />
+                        <input className="inp" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" onChange={e => setFile(e.target.files[0])} required style={{ background: "#fff", borderColor: "rgba(37,99,235,.2)", padding: "8px" }} />
                     </div>
 
                     <button type="submit" className="btn btn-navy" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: 14, background: "linear-gradient(135deg,#1A3270,#2563EB)", boxShadow: "0 8px 20px rgba(37,99,235,.25)", border: "none" }} disabled={isUploading || !subjectId}>

@@ -97,7 +97,10 @@ export function StuSubjects({ user }) {
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 14px", whiteSpace: "nowrap" }} onClick={() => window.open(m.file_url.startsWith('http') ? m.file_url : `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${m.file_url}`, "_blank")}>⬇ Download</button>
+                                                    <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 14px", whiteSpace: "nowrap" }} onClick={() => {
+                                                        const fp = m.file ? `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${m.file}` : m.file_url?.startsWith('http') ? m.file_url : `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${m.file_url}`;
+                                                        window.open(fp, "_blank");
+                                                    }}>⬇ Download</button>
                                                 </div>
                                             ))}
                                     </div>
@@ -167,7 +170,10 @@ export function StuMaterials({ user }) {
                                 </div>
                             )}
                         </div>
-                        <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "7px 14px" }} onClick={() => window.open(f.file_url.startsWith('http') ? f.file_url : `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${f.file_url}`, "_blank")}>⬇ Download</button>
+                        <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "7px 14px" }} onClick={() => {
+                            const fp = f.file ? `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${f.file}` : f.file_url?.startsWith('http') ? f.file_url : `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${f.file_url}`;
+                            window.open(fp, "_blank");
+                        }}>⬇ Download</button>
                     </div>
                 ))}
             </div>

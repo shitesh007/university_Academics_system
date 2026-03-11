@@ -95,6 +95,12 @@ class MaterialViewSet(viewsets.ModelViewSet):
         description = serializer.validated_data.get('description', '')
         subject = serializer.validated_data.get('subject')
         
+        file_obj = self.request.FILES.get('file')
+        if file_obj:
+            size_mb = round(file_obj.size / (1024 * 1024), 2)
+        else:
+            size_mb = float(serializer.validated_data.get('size_mb', 0.0))
+        
         # Get AI Summary via Gemini API
         ai_sum = generate_material_summary(
             title=title, 
@@ -104,7 +110,7 @@ class MaterialViewSet(viewsets.ModelViewSet):
         )
         
         # Save exact faculty and ai summary
-        serializer.save(uploaded_by=self.request.user.faculty, ai_summary=ai_sum)
+        serializer.save(uploaded_by=self.request.user.faculty, ai_summary=ai_sum, size_mb=size_mb)
 
 
 class DownloadMaterialView(APIView):
