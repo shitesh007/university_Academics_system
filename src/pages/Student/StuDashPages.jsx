@@ -90,6 +90,12 @@ export function StuSubjects({ user }) {
                                                             <span style={{ background: "rgba(37,99,235,.1)", color: "var(--blue)", padding: "2px 6px", borderRadius: 4, marginRight: 6 }}>{m.category === 'pyq' ? 'PYQ' : (m.category === 'ebook' ? 'E-Book' : (m.category === 'tutorial' ? 'Video' : (m.category === 'important' ? 'Important' : 'Notes')))}</span>
                                                             {m.size_mb} MB · Uploaded by {m.uploaded_by_name}
                                                         </div>
+                                                        {m.ai_summary && (
+                                                            <div style={{ marginTop: 8, padding: 8, borderRadius: 6, background: "rgba(139,92,246,0.1)", border: "1px dashed rgba(139,92,246,0.3)", color: "var(--navy)", fontSize: 11, lineHeight: 1.4, whiteSpace: "normal" }}>
+                                                                <span style={{ fontWeight: 600, color: "#8b5cf6", marginRight: 5 }}>✨ AI Summary:</span>
+                                                                {m.ai_summary}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 14px", whiteSpace: "nowrap" }} onClick={() => window.open(m.file_url.startsWith('http') ? m.file_url : `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${m.file_url}`, "_blank")}>⬇ Download</button>
                                                 </div>
@@ -154,6 +160,12 @@ export function StuMaterials({ user }) {
                         <div style={{ flex: 1 }}>
                             <div className="mat-name">{f.title} <span style={{ fontSize: 11, color: "var(--muted)", fontWeight: "normal" }}>({f.subject_code})</span></div>
                             <div className="mat-meta">{f.size_mb} MB · Uploaded {new Date(f.upload_date).toLocaleDateString()} · By {f.uploaded_by_name}</div>
+                            {f.ai_summary && (
+                                <div style={{ marginTop: 10, padding: 10, borderRadius: 6, background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", color: "var(--navy)", fontSize: 12, lineHeight: 1.5 }}>
+                                    <div style={{ fontWeight: 600, color: "#8b5cf6", marginBottom: 4 }}>✨ AI Summary</div>
+                                    {f.ai_summary}
+                                </div>
+                            )}
                         </div>
                         <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "7px 14px" }} onClick={() => window.open(f.file_url.startsWith('http') ? f.file_url : `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${f.file_url}`, "_blank")}>⬇ Download</button>
                     </div>

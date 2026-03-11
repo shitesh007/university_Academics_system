@@ -107,6 +107,7 @@ class Material(models.Model):
     file_url = models.URLField(max_length=500)
     upload_date = models.DateTimeField(auto_now_add=True)
     size_mb = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+    ai_summary = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'Study_Materials'

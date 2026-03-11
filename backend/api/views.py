@@ -10,6 +10,7 @@ from .serializers import (
     SchoolSerializer, StudentSerializer, FacultySerializer, SubjectSerializer, 
     EnrollmentSerializer, MaterialSerializer, CustomTokenObtainPairSerializer
 )
+from .services.ai_service import generate_material_summary
 import datetime
 
 try:
@@ -88,7 +89,22 @@ class MaterialViewSet(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(uploaded_by=self.request.user.faculty)
+        # Gather data for AI prompt
+        title = serializer.validated_data.get('title', '')
+        category = serializer.validated_data.get('category', '')
+        description = serializer.validated_data.get('description', '')
+        subject = serializer.validated_data.get('subject')
+        
+        # Get AI Summary via Gemini API
+        ai_sum = generate_material_summary(
+            title=title, 
+            subject_name=subject.name if subject else "Unknown", 
+            category=category, 
+            description=description
+        )
+        
+        # Save exact faculty and ai summary
+        serializer.save(uploaded_by=self.request.user.faculty, ai_summary=ai_sum)
 
 
 class DownloadMaterialView(APIView):
