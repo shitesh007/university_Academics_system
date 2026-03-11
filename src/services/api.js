@@ -75,7 +75,19 @@ export const api = {
 
     // Materials (Students → GET only; Faculty → full CRUD)
     getMaterials: () => axiosInstance.get('/materials/').then(r => r.data),
-    uploadMaterial: (data) => axiosInstance.post('/materials/', data).then(r => r.data),
+    // New Multipart method for actual file uploads
+    uploadFileMaterial: async (formData) => {
+        const tokens = JSON.parse(localStorage.getItem('authTokens') || '{}');
+        // We use a fresh axios request here because the global axiosInstance enforces `application/json`.
+        // By NOT explicitly setting Content-Type, the browser automatically applies `multipart/form-data`
+        // alongside the required cryptographical boundary limits.
+        const res = await axios.post(`${API_URL}/materials/`, formData, {
+            headers: {
+                'Authorization': tokens.access ? `Bearer ${tokens.access}` : ''
+            }
+        });
+        return res.data;
+    },
 
     // Assignments & Submissions
     getAssignments: () => axiosInstance.get('/assignments/').then(r => r.data),
