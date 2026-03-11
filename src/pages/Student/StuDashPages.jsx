@@ -98,7 +98,8 @@ export function StuSubjects({ user }) {
                                                         )}
                                                     </div>
                                                     <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "6px 14px", whiteSpace: "nowrap" }} onClick={() => {
-                                                        const fp = m.file ? `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${m.file}` : m.file_url?.startsWith('http') ? m.file_url : `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${m.file_url}`;
+                                                        const base = import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '');
+                                                        const fp = m.file ? (m.file.startsWith('http') ? m.file : `${base}${m.file}`) : (m.file_url?.startsWith('http') ? m.file_url : `${base}${m.file_url}`);
                                                         window.open(fp, "_blank");
                                                     }}>⬇ Download</button>
                                                 </div>
@@ -171,7 +172,8 @@ export function StuMaterials({ user }) {
                             )}
                         </div>
                         <button className="btn btn-navy btn-sm" style={{ fontSize: 11, padding: "7px 14px" }} onClick={() => {
-                            const fp = f.file ? `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${f.file}` : f.file_url?.startsWith('http') ? f.file_url : `${import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')}${f.file_url}`;
+                            const base = import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '');
+                            const fp = f.file ? (f.file.startsWith('http') ? f.file : `${base}${f.file}`) : (f.file_url?.startsWith('http') ? f.file_url : `${base}${f.file_url}`);
                             window.open(fp, "_blank");
                         }}>⬇ Download</button>
                     </div>

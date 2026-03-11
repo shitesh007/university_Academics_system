@@ -252,6 +252,11 @@ export function FacUpload({ user }) {
                                     {m.subject_code} · {catMap[m.category] || m.category} · {new Date(m.upload_date).toLocaleDateString()}
                                 </div>
                             </div>
+                            <button className="btn btn-navy btn-sm" style={{ padding: "5px 10px" }} onClick={() => {
+                                const base = import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '');
+                                const finalPath = m.file ? (m.file.startsWith('http') ? m.file : `${base}${m.file}`) : (m.file_url?.startsWith('http') ? m.file_url : `${base}${m.file_url}`);
+                                window.open(finalPath, "_blank");
+                            }}>👁 View</button>
                             <button className="btn btn-out btn-sm" style={{ padding: "5px 10px", borderColor: "var(--rose)", color: "var(--rose)" }} onClick={() => handleDelete(m.id)}>
                                 Delete
                             </button>
