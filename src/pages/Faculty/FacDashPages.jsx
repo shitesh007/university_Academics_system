@@ -147,7 +147,9 @@ export function FacUpload({ user }) {
             setFile(null);
             fetchDashboardData();
         } catch (err) {
-            toast.error("Upload failed. Ensure the file is supported.");
+            console.error("Upload Error:", err.response?.data);
+            const msg = err.response?.data ? JSON.stringify(err.response.data) : "Upload failed.";
+            toast.error(msg);
         } finally {
             setIsUploading(false);
         }
