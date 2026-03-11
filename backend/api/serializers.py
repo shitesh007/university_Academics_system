@@ -46,6 +46,7 @@ class MaterialSerializer(serializers.ModelSerializer):
     subject_code = serializers.CharField(source='subject.code', read_only=True)
     subject_name = serializers.CharField(source='subject.name', read_only=True)
     uploaded_by_name = serializers.CharField(source='uploaded_by.user.get_full_name', read_only=True)
+    file_url = serializers.URLField(required=False, allow_blank=True, allow_null=True)
     
     class Meta:
         model = Material
