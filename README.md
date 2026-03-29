@@ -3,7 +3,7 @@
 
 **Academics Hub** is a robust, full-stack university ecosystem designed for multi-disciplinary academic success. It provides a centralized platform for curriculum mapping, automated study material ingestion, and AI-powered learning assistance, supporting specialized requirements for Engineering, Business, and Law.
 
-![Frontend Stack](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite-blue) ![Backend Stack](https://img.shields.io/badge/Backend-Django%206.0%20%2B%20DRF-green) ![AI Stack](https://img.shields.io/badge/AI-Google%20Gemini%201.5%20Pro-orange)
+![Frontend Stack](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite-blue) ![Backend Stack](https://img.shields.io/badge/Backend-Django%206.0%20%2B%20DRF-green) ![AI Stack](https://img.shields.io/badge/AI-Google%20Gemini%201.5%20Pro-orange) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
@@ -103,6 +103,6 @@ npm run start
 - **Mobile First**: Fully responsive layouts tested across multiple viewport sizes.
 - **Unit Tested**: Core logic verified via robust testing suites.
 
----
+## ⚖️ License
 
-*Built with a focus on academic excellence and technological innovation.*
+Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
