@@ -10,6 +10,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterUniqueTogether(
+            name='submission',
+            unique_together=None,
+        ),
         migrations.RemoveField(
             model_name='submission',
             name='assignment',
@@ -21,10 +25,6 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='query',
             name='subject',
-        ),
-        migrations.AlterUniqueTogether(
-            name='submission',
-            unique_together=None,
         ),
         migrations.RemoveField(
             model_name='submission',
