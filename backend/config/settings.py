@@ -75,8 +75,8 @@ if DATABASE_URL and 'sqlite' not in DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
     }
-    # Ensure MySQL engine and strict mode
-    DATABASES['default']['OPTIONS'] = {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"}
+    # Ensure PostgreSQL is used correctly with dj_database_url
+    pass # No default MySQL engine and strict mode needed for Neon PostgreSQL
 else:
     DATABASES = {
         'default': {
