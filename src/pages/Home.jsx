@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SCHOOLS, FEATURES } from '../data/mockData';
+import heroBg from '../assets/hero_bg.jpg';
 
 export function Home() {
     const navigate = useNavigate();
@@ -31,20 +32,29 @@ export function Home() {
                     </div>
                 </div>
 
-                {/* floating quick-access card */}
-                <div style={{ position: "absolute", right: "5%", top: "50%", transform: "translateY(-50%)", width: 340, display: "none" }} className="hero-qcard">
-                    <div style={{ background: "rgba(255,255,255,.09)", border: "1px solid rgba(255,255,255,.18)", backdropFilter: "blur(18px)", borderRadius: 16, padding: 22, animation: "float 7s ease-in-out infinite" }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,.55)", letterSpacing: "1.2px", textTransform: "uppercase", marginBottom: 14 }}>Quick Access</div>
-                        {SCHOOLS.slice(0, 3).map((s, i) => (
-                            <div key={i} style={{ display: "flex", alignItems: "center", gap: 11, padding: "11px 0", borderBottom: i < 2 ? "1px solid rgba(255,255,255,.1)" : "none", cursor: "pointer" }}>
-                                <span style={{ fontSize: 21 }}>{s.emoji}</span>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>{s.name}</div>
-                                    <div style={{ color: "rgba(255,255,255,.42)", fontSize: 11 }}>{s.cnt}</div>
-                                </div>
-                                <span style={{ color: "rgba(255,255,255,.35)" }}>›</span>
-                            </div>
-                        ))}
+                {/* Visual Image Presentation */}
+                <div style={{ position: "absolute", right: "6%", top: "50%", transform: "translateY(-50%)", width: "42%", maxWidth: 600, zIndex: 5 }} className="si">
+                    <div style={{ 
+                        background: "rgba(255,255,255,.05)", 
+                        border: "1px solid rgba(255,255,255,.15)", 
+                        backdropFilter: "blur(20px)", 
+                        borderRadius: 24, 
+                        padding: 10, 
+                        boxShadow: "0 24px 80px rgba(0,0,0,0.3)",
+                        animation: "float 8s ease-in-out infinite"
+                    }}>
+                        <img 
+                            src={heroBg} 
+                            alt="SAGE University Campus" 
+                            style={{ 
+                                width: "100%", 
+                                height: "auto", 
+                                borderRadius: 18, 
+                                display: "block", 
+                                objectFit: "cover",
+                                boxShadow: "inset 0 0 0 1px rgba(255,255,255,.1)"
+                            }} 
+                        />
                     </div>
                 </div>
             </section>
