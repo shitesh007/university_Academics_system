@@ -1,108 +1,104 @@
 # Academics Hub 🎓
-### The Modern University Academic Ingestion & Management Portal
+### The Enterprise Academic Portal for Modern Universities
 
-**Academics Hub** is a robust, full-stack university ecosystem designed for multi-disciplinary academic success. It provides a centralized platform for curriculum mapping, automated study material ingestion, and AI-powered learning assistance, supporting specialized requirements for Engineering, Business, and Law.
+**Academics Hub** is a state-of-the-art, full-stack ecosystem designed to streamline university operations across multi-disciplinary faculties. It provides a centralized platform for curriculum mapping, automated study material ingestion, and AI-powered learning assistance, supporting specialized requirements for Engineering, Business, and Law.
 
-![Frontend Stack](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite-blue) ![Backend Stack](https://img.shields.io/badge/Backend-Django%206.0%20%2B%20DRF-green) ![AI Stack](https://img.shields.io/badge/AI-Google%20Gemini%201.5%20Pro-orange) ![License](https://img.shields.io/badge/license-MIT-green)
-
----
-
-## 🌟 Core Pillars
-
-### 🏫 Multi-School Architecture
-Designed with a modular "School" hierarchy to support complex academic structures:
-- **School of Engineering (SOE)**: Technical curricula with support for Computer Science, ECE, and more.
-- **School of Business (SOB)**: Management and administrative roadmaps including BBA and MBA.
-- **School of Law (SOL)**: Legal studies integration with Jurisprudence and Constitutional law tracks.
-
-### 📚 Comprehensive Curriculum Mapping
-- **8-Semester Roadmap**: Pre-loaded with complete syllabus modules for every school.
-- **Credit-Based Tracking**: Dynamic subject management with built-in credit systems and attendance monitoring.
-- **Enrollment Orchestration**: Seamless connection between Students, Faculty, and their assigned Subjects.
-
-### 🤖 AI-Powered Ingestion
-- **Intelligent Summarization**: Integrated with **Google Gemini 1.5 Pro** to automatically generate study notes and unit summaries from uploaded documents.
-- **Smart Metadata Extraction**: Automatically tracks file size, category (Notes, PYQs, E-books), and upload history.
+![Frontend](https://img.shields.io/badge/Frontend-React%2019-blue?style=for-the-badge&logo=react)
+![Backend](https://img.shields.io/badge/Backend-Django%206.0-green?style=for-the-badge&logo=django)
+![AI](https://img.shields.io/badge/AI-Gemini%201.5-orange?style=for-the-badge&logo=google-gemini)
+![Database](https://img.shields.io/badge/Database-PostgreSQL-blue?style=for-the-badge&logo=postgresql)
 
 ---
 
-## 🛠️ Technical Implementation
+## 🏛️ Multi-School Architecture
+Designed with a modular "School" hierarchy, Academics Hub handles diverse academic tracks within a single unified infrastructure:
 
-### Frontend: High-Performance UI
-- **Framework**: React 19 (Modern Fiber Architecture)
-- **Engine**: Vite for lightning-fast HMR and build performance.
-- **UX**: Custom modular design system with responsive sidebar navigation and role-based themes.
-- **Data Flow**: Optimized Axios interceptors and React Context for centralized Auth & State.
+*   **School of Engineering (SOE)**: Technical curricula including Computer Science, ECE, and Mechanical Engineering.
+*   **School of Business Administration (SOB)**: Management roadmaps for BBA, MBA, and Executive programs.
+*   **School of Law (SOL)**: Legal studies integration with Constitutional and Corporate law tracks.
 
-### Backend: Scalable REST Services
-- **Framework**: Django 6.0 + Django REST Framework.
-- **Security**: Stateless JWT-based authentication (SimpleJWT) with secure refresh cycles.
-- **Database**: PostgreSQL with complex relational mapping for Schools, Materials, and Enrollments.
-- **Statics**: Performance-tuned Whitenoise and Gunicorn configuration for production readiness.
+## 🚀 Key Features
 
----
+### 📅 8-Semester Curriculum Mapping
+*   **Complete Roadmap**: Pre-loaded with a full 8-semester syllabus for all integrated schools.
+*   **Subject Orchestration**: Dynamic credit-based tracking and faculty assignment.
+*   **Enrollment System**: Automated student-to-subject mapping based on semester progression.
 
-## 📂 Project Anatomy
+### 🤖 AI-Powered Ingestion & Summarization
+*   **Gemini Integration**: Deeply integrated with **Google Gemini 1.5 Pro** to automatically generate unit-wise summaries from uploaded PDFs.
+*   **Smart Categorization**: Automated tracking of **PYQs (Previous Year Questions)**, **Handwritten Notes**, and **E-books**.
+*   **Metadata Extraction**: Real-time extraction of document size, category, and educational relevance.
 
-```text
-├── backend/                # Enterprise Django API
-│   ├── api/                # Core Logic (Models: School, Material, Enrollment)
-│   ├── config/             # System Configuration & Security
-│   ├── management/         # CLI Tools (Project-specific seed_db)
-│   └── railway.toml        # Production Deployment Specs
-├── src/                    # React 19 Application
-│   ├── components/         # Reusable Atomic UI Units
-│   ├── pages/              # Portal Views (Faculty/Student Dashboards)
-│   ├── context/            # Auth & RBAC State
-│   └── services/           # Backend API Integration Layer
-├── start_node.bat          # Unified Project Bootstrapper
-└── .env.template           # Environment Specification
-```
+### 🔐 Dual-Portal Experience
+*   **Faculty Dashboard**: Advanced tools for material uploads, AI summary moderation, and student attendance tracking.
+*   **Student Portal**: Personalized views showing enrolled subjects, downloadable resources, and CGPA tracking.
 
 ---
 
-## 🚀 Local Development
+## 🛠️ Technology Stack
 
-### Prerequisites
-- Python 3.10+
-- Node.js 18.x
-- PostgreSQL or SQLite
+| Layer | Technology | Details |
+| :--- | :--- | :--- |
+| **Frontend** | **React 19 + Vite** | Modern Fiber architecture, ultra-fast HMR, and Atomic UI design. |
+| **Backend** | **Django 6.0 + DRF** | Scalable REST API with robust ORM and middleware security. |
+| **Database** | **PostgreSQL** | Enterprise relational storage (Optimized for Neon/AWS). |
+| **AI Engine** | **Google Gemini** | LLM-driven document analysis and data summarization. |
+| **Auth** | **JWT (SimpleJWT)** | Secure, stateless authentication with refresh/rotate cycles. |
 
-### 1. Backend Bootstrapping
+---
+
+## 📦 Database Schema Overview
+The system follows a strict hierarchical relationship:
+`School` ➔ `Department` ➔ `Faculty/Student` ➔ `Subject` ➔ `Material` ➔ `AI Summary`
+
+---
+
+## 🛠️ Local Setup Guide
+
+### 1. Prerequisites
+*   Python 3.11+
+*   Node.js 20+
+*   PostgreSQL Instance
+
+### 2. Backend Configuration
 ```bash
 cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python manage.py migrate
+```
 
-# Seed the database with 8 semesters of data for all Schools
+Create a `.env` file in the `backend/` directory:
+```env
+DATABASE_URL=postgresql://neondb_owner:npg_yWl0zeh8fjkT@ep-lingering-darkness-a1mmkuva-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+SECRET_KEY=your_secret_key
+GEMINI_API_KEY=your_gemini_key
+DEBUG=True
+```
+
+### 3. Database Initialization
+```bash
+python manage.py migrate
+# Seed the database with the full 8-semester curriculum
 python manage.py seed_db
 python manage.py runserver
 ```
 
-### 2. Frontend Bootstrapping
+### 4. Frontend Configuration
 ```bash
+cd ..
 npm install
-npm run start
+npm run dev
 ```
 
 ---
 
-## 📡 Essential Endpoints
-
-| Category | Endpoint | Access |
-| :--- | :--- | :--- |
-| **Auth** | `/api/token/` | Public |
-| **Academic** | `/api/subjects/` | Auth Required |
-| **Ingestion** | `/api/materials/` | Faculty Only |
-| **Profile** | `/api/status/` | Role-based |
-
----
-
-## 🏁 Verification & Deployment
-- **Deployment Ready**: Optimized `vercel.json` and `railway.toml` for zero-downtime deployment.
-- **Mobile First**: Fully responsive layouts tested across multiple viewport sizes.
-- **Unit Tested**: Core logic verified via robust testing suites.
+## 🚦 Verification
+To verify the installation:
+1.  Navigate to `http://localhost:5173`.
+2.  **Login as Engineering Student**: `aditya_sharma` / `sage@2025`
+3.  **Login as Engineering Faculty**: `r_mishra` / `faculty@2025`
+4.  Verify that all 8 semesters are visible in the curriculum view.
 
 ## ⚖️ License
-
-Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
