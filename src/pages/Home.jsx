@@ -8,53 +8,59 @@ export function Home() {
     return (
         <div className="fi">
             {/* HERO */}
-            <section className="hero">
-                <div className="hero-orb" style={{ width: 440, height: 440, background: "#D97706", opacity: .07, top: -130, right: -80, animation: "float 10s ease-in-out infinite" }} />
-                <div className="hero-orb" style={{ width: 320, height: 320, background: "#2563EB", opacity: .09, bottom: -90, left: -70, animation: "float 12s ease-in-out infinite reverse" }} />
-                <div className="hero-orb" style={{ width: 200, height: 200, background: "#7C3AED", opacity: .07, top: "40%", left: "32%" }} />
-                <div className="hero-grid" />
-                <div className="hero-content">
-                    <div className="hero-badge fu" style={{ animationDelay: "0s" }}>Academic Year 2024–25 · Now Live</div>
+            <section className="hero" style={{ position: "relative", overflow: "hidden" }}>
+                {/* Full Background Image */}
+                <div style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 0
+                }}>
+                    <img 
+                        src={heroBg} 
+                        alt="SAGE University Campus Background" 
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            opacity: 0.4
+                        }}
+                    />
+                    {/* Gradient Overlay for Text Readability */}
+                    <div style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        background: "linear-gradient(to right, rgba(15,23,42,1) 0%, rgba(15,23,42,0.8) 40%, rgba(15,23,42,0.5) 100%)"
+                    }} />
+                </div>
+
+                <div className="hero-orb" style={{ width: 440, height: 440, background: "#D97706", opacity: .15, top: -130, right: -80, animation: "float 10s ease-in-out infinite", zIndex: 1 }} />
+                <div className="hero-orb" style={{ width: 320, height: 320, background: "#2563EB", opacity: .15, bottom: -90, left: -70, animation: "float 12s ease-in-out infinite reverse", zIndex: 1 }} />
+                <div className="hero-orb" style={{ width: 200, height: 200, background: "#7C3AED", opacity: .15, top: "40%", left: "32%", zIndex: 1 }} />
+                
+                <div className="hero-grid" style={{ zIndex: 1 }} />
+                
+                <div className="hero-content" style={{ position: "relative", zIndex: 10, maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
+                    <div className="hero-badge fu" style={{ animationDelay: "0s", margin: "0 auto 1.5rem auto" }}>Academic Year 2024–25 · Now Live</div>
                     <h1 className="hero-title fu" style={{ animationDelay: ".08s" }}>
                         SAGE University<br /><span>Bhopal</span> Academic<br />Portal
                     </h1>
-                    <p className="hero-sub fu" style={{ animationDelay: ".16s" }}>
+                    <p className="hero-sub fu" style={{ animationDelay: ".16s", margin: "1rem auto 2.5rem auto" }}>
                         All your semester study materials, PYQs, faculty notes, and academic resources — centralized in one place.
                     </p>
-                    <div className="hero-cta fu" style={{ animationDelay: ".24s" }}>
+                    <div className="hero-cta fu" style={{ animationDelay: ".24s", display: "flex", justifyContent: "center", gap: "1rem" }}>
                         <button className="btn btn-gold" style={{ padding: "13px 30px", fontSize: 15 }} onClick={() => navigate("/student-login")}>📚 Browse as Student</button>
-                        <button className="btn btn-out" style={{ color: "#fff", borderColor: "rgba(255,255,255,.35)", padding: "13px 28px", fontSize: 15 }} onClick={() => navigate("/faculty-login")}>👨‍🏫 Faculty Login</button>
+                        <button className="btn btn-out" style={{ color: "#fff", borderColor: "rgba(255,255,255,.35)", padding: "13px 28px", fontSize: 15, background: "rgba(0,0,0,0.2)", backdropFilter: "blur(10px)" }} onClick={() => navigate("/faculty-login")}>👨‍🏫 Faculty Login</button>
                     </div>
-                    <div className="hero-stats fu" style={{ animationDelay: ".32s" }}>
+                     <div className="hero-stats fu" style={{ animationDelay: ".32s", justifyContent: "center" }}>
                         {[["8,000+", "Students"], ["200+", "Materials"], ["45+", "Faculty"], ["8", "Schools"]].map(([n, l], i) => (
                             <div key={i}><div className="hs-num">{n}</div><div className="hs-lbl">{l}</div></div>
                         ))}
-                    </div>
-                </div>
-
-                {/* Visual Image Presentation */}
-                <div style={{ position: "absolute", right: "6%", top: "50%", transform: "translateY(-50%)", width: "42%", maxWidth: 600, zIndex: 5 }} className="si">
-                    <div style={{ 
-                        background: "rgba(255,255,255,.05)", 
-                        border: "1px solid rgba(255,255,255,.15)", 
-                        backdropFilter: "blur(20px)", 
-                        borderRadius: 24, 
-                        padding: 10, 
-                        boxShadow: "0 24px 80px rgba(0,0,0,0.3)",
-                        animation: "float 8s ease-in-out infinite"
-                    }}>
-                        <img 
-                            src={heroBg} 
-                            alt="SAGE University Campus" 
-                            style={{ 
-                                width: "100%", 
-                                height: "auto", 
-                                borderRadius: 18, 
-                                display: "block", 
-                                objectFit: "cover",
-                                boxShadow: "inset 0 0 0 1px rgba(255,255,255,.1)"
-                            }} 
-                        />
                     </div>
                 </div>
             </section>
