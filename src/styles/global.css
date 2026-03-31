@@ -148,19 +148,22 @@ body{font-family:'Sora',sans-serif;background:var(--surface);color:var(--navy);t
 
 /* ── Header (public) ── */
 .hdr{
-  position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,.93);backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--border);
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(255,255,255,0.08);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,0.15);
   padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:66px;
   transition:var(--t);
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
 }
-[data-dark="1"] .hdr{background:rgba(11,29,78,.92);border-bottom-color:rgba(42,74,158,.3)}
+[data-dark="1"] .hdr{background:rgba(11,29,78,0.3);border-bottom-color:rgba(255,255,255,0.08);}
+
 .logo{display:flex;align-items:center;gap:10px;cursor:pointer}
-.logo-ico{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1A3270,#2563EB);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-weight:700;color:#fff;font-size:15px}
-.logo-name{font-family:'Lora',serif;font-weight:700;color:var(--navy);font-size:17px;line-height:1.1}
-[data-dark="1"] .logo-name{color:#E2E8F8}
-.logo-tagline{font-size:10px;color:var(--muted)}
-.hdr-right{display:flex;align-items:center;gap:8px}
+.logo-ico{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1A3270,#2563EB);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-weight:700;color:#fff;font-size:15px;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
+.logo-name{font-family:'Lora',serif;font-weight:700;color:#ffffff;font-size:17px;line-height:1.1;text-shadow:0 2px 8px rgba(0,0,0,0.5)}
+/* In dark and light mode, keep the text white in the header because the header floats over dark images */
+[data-dark="1"] .logo-name{color:#ffffff;}
+.logo-tagline{font-size:10px;color:rgba(255,255,255,0.7);text-shadow:0 1px 4px rgba(0,0,0,0.5)}
+.hdr-right{display:flex;align-items:center;gap:12px}
 
 /* ── Buttons ── */
 .btn{display:inline-flex;align-items:center;gap:7px;font-family:'Sora',sans-serif;font-weight:700;cursor:pointer;border:none;border-radius:var(--r-sm);transition:var(--t)}
